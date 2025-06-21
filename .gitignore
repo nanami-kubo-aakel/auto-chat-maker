@@ -175,4 +175,4 @@ Desktop.ini
 # Project specific
 logs/
 *.log
-config/local_settings.py 
+config/local_settings.py

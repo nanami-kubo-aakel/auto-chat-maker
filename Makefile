@@ -70,4 +70,4 @@ check-venv:  ## 仮想環境が有効かチェック
 		exit 1; \
 	else \
 		echo "仮想環境が有効です: $$VIRTUAL_ENV"; \
-	fi 
+	fi
