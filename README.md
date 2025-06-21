@@ -80,6 +80,5 @@ auto_chat_maker/
 │       ├── utils/
 │       └── config/
 ├── tests/
-├── docs/
-└── config/
+└── docs/
 ``` 
