@@ -81,4 +81,15 @@ auto_chat_maker/
 │       └── config/
 ├── tests/
 └── docs/
-``` 
+```
+
+## コントリビューション
+
+プロジェクトへの貢献を歓迎します！詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+## ドキュメント
+
+- [要件定義](docs/requirements/)
+- [設計書](docs/design/)
+- [仕様書](docs/specification/)
+- [開発者ガイド](docs/developer-guide/) 
