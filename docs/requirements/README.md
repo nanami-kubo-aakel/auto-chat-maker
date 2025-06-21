@@ -42,6 +42,11 @@ Microsoft Graph Webhook／MCPサーバー（`ms-365-mcp-server`）を用いて�
 - 外部システム連携要件
 - 拡張性を考慮したアーキテクチャ設計
 
+### 開発計画
+- ローカル試行を前提とした段階的開発計画
+- 技術スタックの選択理由
+- 実装順序とスケジュール
+
 ## ファイル構成
 
 - `business-requirements.md` - ビジネス要件
@@ -50,6 +55,7 @@ Microsoft Graph Webhook／MCPサーバー（`ms-365-mcp-server`）を用いて�
 - `constraints.md` - 制約事項
 - `use-cases.md` - ユースケース
 - `technical-requirements.md` - 技術要件
+- `development-plan.md` - 開発計画
 
 ## 拡張計画
 
@@ -71,5 +77,6 @@ Microsoft Graph Webhook／MCPサーバー（`ms-365-mcp-server`）を用いて�
 
 - 初版作成: 2024年12月
 - Teams対応化: 2024年12月 - Teamsチャットベースに変更、拡張計画を追加
+- ローカル試行版対応: 2024年12月 - 開発計画書を追加
 - 最終更新: 2024年12月
 - 更新者: 開発チーム
