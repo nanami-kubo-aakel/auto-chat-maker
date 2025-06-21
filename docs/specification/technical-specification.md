@@ -2,7 +2,7 @@
 
 ## 概要
 
-AIメールアシスタントシステムの技術的な実装仕様を定義します。
+AI Teamsチャットアシスタントシステムの技術的な実装仕様を定義します。システムは拡張性を重視し、将来的なOutlookメール対応も容易に追加できるアーキテクチャを採用しています。
 
 ## 技術スタック
 
@@ -15,8 +15,8 @@ AIメールアシスタントシステムの技術的な実装仕様を定義し
 - **ログ**: structlog
 
 ### 外部サービス連携
-- **Microsoft Graph API**: メール・スレッド・サブスクリプション管理
-- **MCPサーバー**: `ms-365-mcp-server` - Outlook連携
+- **Microsoft Graph API**: Teamsチャット・スレッド・サブスクリプション管理
+- **MCPサーバー**: `ms-365-mcp-server` - Teams連携
 - **AIサービス**: Claude API（Anthropic）
 
 ### 開発・運用ツール
@@ -61,20 +61,21 @@ AIメールアシスタントシステムの技術的な実装仕様を定義し
 - created_at: TIMESTAMP
 - updated_at: TIMESTAMP
 
-#### emails
+#### chat_messages
 - id: UUID (Primary Key)
 - user_id: UUID (Foreign Key)
 - message_id: VARCHAR(255) (Unique)
-- subject: TEXT
-- body: TEXT
+- content: TEXT
 - sender: VARCHAR(255)
-- received_at: TIMESTAMP
+- thread_id: VARCHAR(255)
+- message_type: VARCHAR(50) (text, image, file, etc.)
+- sent_at: TIMESTAMP
 - processed_at: TIMESTAMP
 - created_at: TIMESTAMP
 
 #### reply_suggestions
 - id: UUID (Primary Key)
-- email_id: UUID (Foreign Key)
+- chat_message_id: UUID (Foreign Key)
 - content: TEXT
 - confidence_score: DECIMAL(3,2)
 - selected: BOOLEAN
@@ -85,7 +86,15 @@ AIメールアシスタントシステムの技術的な実装仕様を定義し
 - user_id: UUID (Foreign Key)
 - subscription_id: VARCHAR(255)
 - resource: VARCHAR(255)
+- resource_type: VARCHAR(50) (chat, mail, etc.)
 - expires_at: TIMESTAMP
+- created_at: TIMESTAMP
+
+#### message_types
+- id: UUID (Primary Key)
+- type_name: VARCHAR(50) (chat, mail, etc.)
+- description: TEXT
+- is_active: BOOLEAN
 - created_at: TIMESTAMP
 
 ## API仕様
@@ -112,18 +121,18 @@ Microsoft Graph Webhook受信エンドポイント
 
 **レスポンス**: 200 OK
 
-#### GET /api/emails
-ユーザーのメール一覧取得
+#### GET /api/chat-messages
+ユーザーのチャットメッセージ一覧取得
 
 **レスポンス**:
 ```json
 {
-  "emails": [
+  "chat_messages": [
     {
       "id": "uuid",
-      "subject": "string",
+      "content": "string",
       "sender": "string",
-      "received_at": "timestamp",
+      "sent_at": "timestamp",
       "reply_suggestions": [
         {
           "id": "uuid",
@@ -136,8 +145,8 @@ Microsoft Graph Webhook受信エンドポイント
 }
 ```
 
-#### POST /api/emails/{email_id}/reply
-メール返信送信
+#### POST /api/chat-messages/{message_id}/reply
+チャットメッセージ返信送信
 
 **リクエスト**:
 ```json
@@ -163,16 +172,16 @@ Microsoft Graph Webhook受信エンドポイント
 
 ### MCPサーバー連携
 
-#### メール取得
+#### チャットメッセージ取得
 ```python
-# メール情報取得
-GET /mcp/ms-365/mail/{message_id}
+# チャットメッセージ情報取得
+GET /mcp/ms-365/chat/{message_id}
 ```
 
-#### メール返信
+#### チャット返信
 ```python
-# メール返信送信
-POST /mcp/ms-365/mail/reply
+# チャット返信送信
+POST /mcp/ms-365/chat/reply
 {
   "messageId": "string",
   "content": "string"
@@ -185,11 +194,11 @@ POST /mcp/ms-365/mail/reply
 ```python
 # プロンプト例
 """
-以下のメールに対して返信が必要かどうかを判断してください。
+以下のチャットメッセージに対して返信が必要かどうかを判断してください。
 返信が必要な場合は「REPLY_NEEDED」、不要な場合は「NO_REPLY」を返してください。
 
-メール内容:
-{email_content}
+チャットメッセージ内容:
+{message_content}
 """
 ```
 
@@ -197,65 +206,92 @@ POST /mcp/ms-365/mail/reply
 ```python
 # プロンプト例
 """
-以下のメールに対して、3件の返信案を生成してください。
-各返信案は自然で丁寧な日本語で、100文字以内で作成してください。
+以下のチャットメッセージに対して、3件の返信案を生成してください。
+チャットの文脈とトーンを考慮した自然な返信案を作成してください。
 
-メール内容:
-{email_content}
-
-返信案1:
-返信案2:
-返信案3:
+チャットメッセージ内容:
+{message_content}
 """
 ```
 
-## セキュリティ仕様
+## 拡張性設計
+
+### プラグインアーキテクチャ
+
+#### メッセージ処理プラグイン
+```python
+from abc import ABC, abstractmethod
+
+class MessageProcessor(ABC):
+    @abstractmethod
+    def process_message(self, message: dict) -> dict:
+        pass
+
+    @abstractmethod
+    def send_reply(self, message_id: str, content: str) -> bool:
+        pass
+```
+
+#### Teamsチャット処理プラグイン
+```python
+class TeamsChatProcessor(MessageProcessor):
+    def process_message(self, message: dict) -> dict:
+        # Teamsチャット固有の処理
+        pass
+
+    def send_reply(self, message_id: str, content: str) -> bool:
+        # Teamsチャット返信処理
+        pass
+```
+
+#### 将来的なメール処理プラグイン
+```python
+class OutlookMailProcessor(MessageProcessor):
+    def process_message(self, message: dict) -> dict:
+        # Outlookメール固有の処理
+        pass
+
+    def send_reply(self, message_id: str, content: str) -> bool:
+        # Outlookメール返信処理
+        pass
+```
+
+### 設定管理
+
+#### 機能有効化設定
+```python
+class FeatureConfig:
+    teams_chat_enabled: bool = True
+    outlook_mail_enabled: bool = False  # 将来的に有効化
+    ai_service_enabled: bool = True
+```
+
+## パフォーマンス要件
+
+### 処理時間
+- チャットメッセージ処理時間: 10秒以内
+- AI判定・生成時間: 30秒以内
+- 返信送信時間: 5秒以内
+
+### スループット
+- 1日あたりのチャットメッセージ処理数: 10,000件
+- 同時処理可能ユーザー数: 100人以上
+
+## セキュリティ要件
 
 ### 認証・認可
-- OAuth2認証（Microsoft Graph）
-- JWTトークン管理
+- Microsoft 365認証必須
+- JWTトークンによるセッション管理
 - ロールベースアクセス制御
 
 ### データ保護
-- 個人情報の暗号化
-- 通信のHTTPS化
-- ログの機密情報マスキング
-
-### Webhookセキュリティ
-- HMAC署名検証
-- リクエスト元IP制限
-- レート制限
-
-## パフォーマンス仕様
-
-### レスポンス時間
-- API応答時間: 500ms以内
-- AI処理時間: 5秒以内
-- メール処理時間: 10秒以内
-
-### スループット
-- 同時接続数: 100
-- 1日あたりのメール処理数: 10,000件
-
-### 可用性
-- 稼働率: 99.9%
-- 障害復旧時間: 30分以内
-
-## 監視・ログ
-
-### ログ出力
-- アプリケーションログ: structlog
-- アクセスログ: FastAPI標準
-- エラーログ: 構造化ログ
-
-### メトリクス
-- API応答時間
-- エラー率
-- 処理件数
-- 外部API呼び出し回数
+- TLS 1.3以上での通信暗号化
+- データベース保存時暗号化
+- 機密情報のマスキング
 
 ## 更新履歴
 
 - 初版作成: 2024年12月
+- Teams対応化: 2024年12月 - Teamsチャットベースに変更、拡張性設計を追加
 - 最終更新: 2024年12月
 - 更新者: 開発チーム
