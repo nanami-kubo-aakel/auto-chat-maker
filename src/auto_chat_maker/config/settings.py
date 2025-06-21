@@ -2,10 +2,13 @@
 環境変数・.envファイルから設定値を読み込む参照用モジュール
 """
 from typing import Optional
+
 from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     """アプリケーション全体の設定値を環境変数から読み込むクラス"""
+
     # ここではデフォルト値や機密値は記載しません
     app_name: Optional[str] = None
     app_version: Optional[str] = None
@@ -27,8 +30,10 @@ class Settings(BaseSettings):
         case_sensitive = False
         env_file_encoding = "utf-8"
 
+
 settings = Settings()
+
 
 def get_settings() -> Settings:
     """設定インスタンスを取得"""
-    return settings 
+    return settings

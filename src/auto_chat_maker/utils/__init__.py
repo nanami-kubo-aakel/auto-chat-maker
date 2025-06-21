@@ -4,4 +4,6 @@ Utility functions for Auto Chat Maker.
 Auto Chat Makerのユーティリティ関数を提供するモジュールです。
 """
 
-__all__ = [] 
+from typing import List
+
+__all__: List[str] = []

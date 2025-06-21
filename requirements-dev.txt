@@ -21,4 +21,4 @@ pre-commit>=3.0.0
 
 # ドキュメント生成
 sphinx>=6.0.0
-sphinx-rtd-theme>=1.2.0 
+sphinx-rtd-theme>=1.2.0

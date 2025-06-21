@@ -4,4 +4,6 @@ Configuration management for Auto Chat Maker.
 Auto Chat Makerの設定管理を提供するモジュールです。
 """
 
-__all__ = [] 
+from typing import List
+
+__all__: List[str] = []
