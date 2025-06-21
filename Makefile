@@ -1,13 +1,25 @@
-.PHONY: help install install-dev test lint format clean docs
+.PHONY: help install install-dev test lint format clean docs venv setup setup-venv
 
 help:  ## このヘルプメッセージを表示
 	@echo "利用可能なコマンド:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-install:  ## 依存関係をインストール
+venv:  ## 仮想環境を作成
+	python -m venv venv
+	@echo "仮想環境を作成しました。有効化するには: source venv/bin/activate"
+
+setup-venv: venv  ## 仮想環境を作成し、依存関係をインストール
+	@echo "仮想環境を作成し、依存関係をインストールしています..."
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install -r requirements.txt
+	venv/bin/pip install -r requirements-dev.txt
+	venv/bin/pre-commit install
+	@echo "仮想環境のセットアップが完了しました。有効化するには: source venv/bin/activate"
+
+install:  ## 依存関係をインストール（仮想環境が有効な場合）
 	pip install -r requirements.txt
 
-install-dev:  ## 開発用依存関係をインストール
+install-dev:  ## 開発用依存関係をインストール（仮想環境が有効な場合）
 	pip install -r requirements-dev.txt
 	pre-commit install
 
@@ -41,8 +53,21 @@ clean:  ## 一時ファイルを削除
 	rm -rf htmlcov/
 	rm -rf .coverage
 
+clean-venv:  ## 仮想環境を削除
+	rm -rf venv/
+
 docs:  ## ドキュメントを生成
 	cd docs && make html
 
-setup: install-dev  ## 開発環境をセットアップ
-	@echo "開発環境のセットアップが完了しました" 
+setup: install-dev  ## 開発環境をセットアップ（既存の仮想環境が有効な場合）
+	@echo "開発環境のセットアップが完了しました"
+
+check-venv:  ## 仮想環境が有効かチェック
+	@if [ -z "$$VIRTUAL_ENV" ]; then \
+		echo "警告: 仮想環境が有効になっていません。"; \
+		echo "仮想環境を作成するには: make setup-venv"; \
+		echo "既存の仮想環境を有効化するには: source venv/bin/activate"; \
+		exit 1; \
+	else \
+		echo "仮想環境が有効です: $$VIRTUAL_ENV"; \
+	fi 
