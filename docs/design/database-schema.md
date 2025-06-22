@@ -96,6 +96,8 @@ CREATE TABLE chat_messages (
     sender VARCHAR(255) NOT NULL,
     thread_id VARCHAR(255) NOT NULL,
     message_type VARCHAR(50) NOT NULL,
+    channel_id VARCHAR(255),
+    team_id VARCHAR(255),
     sent_at TIMESTAMP,
     processed_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -113,6 +115,8 @@ CREATE TABLE chat_messages (
 | sender | VARCHAR(255) | NOT NULL | 送信者名 |
 | thread_id | VARCHAR(255) | NOT NULL | スレッドID |
 | message_type | VARCHAR(50) | NOT NULL | メッセージタイプ |
+| channel_id | VARCHAR(255) | | TeamsチャンネルID |
+| team_id | VARCHAR(255) | | TeamsチームID |
 | sent_at | TIMESTAMP | | 送信日時 |
 | processed_at | TIMESTAMP | | 処理日時 |
 | created_at | TIMESTAMP | DEFAULT | 作成日時 |
@@ -123,10 +127,12 @@ CREATE TABLE chat_messages (
 - `idx_chat_messages_sent_at` (sent_at)
 - `idx_chat_messages_thread_id` (thread_id)
 - `idx_chat_messages_processed_at` (processed_at)
+- `idx_chat_messages_channel_id` (channel_id)
+- `idx_chat_messages_team_id` (team_id)
 
 **サンプルデータ**:
 ```sql
-INSERT INTO chat_messages (user_id, message_id, content, sender, thread_id, message_type, sent_at) VALUES
+INSERT INTO chat_messages (user_id, message_id, content, sender, thread_id, message_type, channel_id, team_id, sent_at) VALUES
 (
     (SELECT id FROM users WHERE email = 'user1@example.com'),
     'msg_001',
@@ -134,6 +140,8 @@ INSERT INTO chat_messages (user_id, message_id, content, sender, thread_id, mess
     '田中太郎',
     'thread_001',
     'text',
+    'channel_001',
+    'team_001',
     '2024-12-01 10:00:00'
 );
 ```
@@ -202,6 +210,9 @@ CREATE TABLE subscriptions (
     resource VARCHAR(255) NOT NULL,
     resource_type VARCHAR(50) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
+    webhook_url VARCHAR(500),
+    change_type VARCHAR(50),
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -216,6 +227,9 @@ CREATE TABLE subscriptions (
 | resource | VARCHAR(255) | NOT NULL | リソースURL |
 | resource_type | VARCHAR(50) | NOT NULL | リソースタイプ |
 | expires_at | TIMESTAMP | NOT NULL | 有効期限 |
+| webhook_url | VARCHAR(500) | | Webhook通知先URL |
+| change_type | VARCHAR(50) | | 変更タイプ（created, updated, deleted） |
+| is_active | BOOLEAN | DEFAULT TRUE | 有効フラグ |
 | created_at | TIMESTAMP | DEFAULT | 作成日時 |
 
 **インデックス**:
@@ -223,16 +237,19 @@ CREATE TABLE subscriptions (
 - `idx_subscriptions_subscription_id` (subscription_id)
 - `idx_subscriptions_expires_at` (expires_at)
 - `idx_subscriptions_resource_type` (resource_type)
+- `idx_subscriptions_is_active` (is_active)
 
 **サンプルデータ**:
 ```sql
-INSERT INTO subscriptions (user_id, subscription_id, resource, resource_type, expires_at) VALUES
+INSERT INTO subscriptions (user_id, subscription_id, resource, resource_type, expires_at, webhook_url, change_type) VALUES
 (
     (SELECT id FROM users WHERE email = 'user1@example.com'),
     'sub_001',
     'https://graph.microsoft.com/v1.0/teams/team-id/channels/channel-id/messages',
     'teams_chat',
-    '2024-12-02 10:00:00'
+    '2024-12-02 10:00:00',
+    'https://your-app.ngrok.io/api/webhook/microsoft-graph',
+    'created'
 );
 ```
 
