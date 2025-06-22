@@ -36,7 +36,6 @@
 ### 技術仕様
 - `technical-specification.md` - 技術仕様書
 - `system-requirements.md` - システム要件
-- `technology-stack.md` - 技術スタック
 - `coding-standards.md` - コーディング規約
 - `performance-specification.md` - パフォーマンス仕様
 
@@ -74,5 +73,6 @@
 ## 更新履歴
 
 - 初版作成: [日付]
+- 技術設計書移動: 2024年12月 - 技術設計書を設計書ディレクトリに移動
 - 最終更新: [日付]
 - 更新者: [担当者名]

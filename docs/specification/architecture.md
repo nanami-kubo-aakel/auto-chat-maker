@@ -10,41 +10,39 @@ AI Teamsチャットアシスタントシステムは、クリーンアーキテ
 
 Robert C. Martin（Uncle Bob）が提唱したアーキテクチャパターンを採用しています。
 
-#### 特徴
-- **依存関係の方向**: 内側（ドメイン）に向かって依存
-- **レイヤー分離**: 関心事の分離による保守性向上
-- **テスタビリティ**: 各レイヤーの独立したテストが可能
+#### 設計原則
+- **依存関係の方向**: 内側のレイヤーは外側のレイヤーに依存しない
 - **フレームワーク独立性**: ビジネスロジックがフレームワークに依存しない
-- **拡張性**: プラグイン形式での新機能追加が可能
+- **テスタビリティ**: 各レイヤーが独立してテスト可能
+- **独立性**: データベースやUIの変更がビジネスロジックに影響しない
 
-#### レイヤー構成
+#### レイヤー構造
 ```
 Entities (ドメイン) ← Use Cases (アプリケーション) ← Interface Adapters (インフラ) ← Frameworks & Drivers (フレームワーク)
 ```
 
-## ディレクトリ構造
+## プロジェクト構造
 
 ```
 src/auto_chat_maker/
-├── __init__.py
 ├── api/                        # フレームワーク & ドライバー層
 │   ├── __init__.py
-│   ├── controllers/            # HTTPリクエスト処理
+│   ├── controllers/            # コントローラー
 │   │   └── __init__.py
-│   ├── middleware/             # 認証、ログ、エラーハンドリング
+│   ├── middleware/             # ミドルウェア
 │   │   └── __init__.py
-│   └── routes.py               # APIルーティング定義
+│   └── routes.py               # ルーティング
 │
 ├── application/                # アプリケーション層
 │   ├── __init__.py
-│   ├── use_cases/              # ユースケース（ビジネスプロセス）
+│   ├── use_cases/              # ユースケース
 │   │   └── __init__.py
 │   └── schedulers/             # 定期実行処理
 │       └── __init__.py
 │
-├── domain/                     # エンティティ層（ドメイン層）
+├── domain/                     # ドメイン層
 │   ├── __init__.py
-│   ├── models/                 # ドメインモデル（エンティティ）
+│   ├── models/                 # エンティティ
 │   │   └── __init__.py
 │   ├── repositories/           # リポジトリインターフェース
 │   │   └── __init__.py
@@ -75,6 +73,159 @@ src/auto_chat_maker/
 │   └── __init__.py
 │
 └── main.py                     # アプリケーションエントリーポイント
+```
+
+## 技術スタックの選択理由
+
+### FastAPIの採用理由
+
+#### 1. 軽量で高速
+- **ローカル試行に最適**: 軽量なフレームワークでローカル環境での動作が高速
+- **起動時間**: 数秒での起動が可能
+- **メモリ使用量**: 最小限のメモリ消費
+
+#### 2. 非同期対応
+- **組み込み非同期機能**: Celery + Redisのような重い非同期処理システムが不要
+- **同時リクエスト処理**: 複数のリクエストを効率的に処理
+- **Webhook処理**: 非同期でのWebhook受信処理に適している
+
+#### 3. 自動ドキュメント生成
+- **OpenAPI/Swagger**: 自動的にAPI仕様書を生成
+- **開発効率**: API開発・テストが効率的
+- **チーム開発**: 仕様書の共有が容易
+
+#### 4. 型安全性
+- **Pydantic**: 強力な型チェックとバリデーション
+- **開発時エラー検出**: 実行時エラーを開発時に発見
+- **IDEサポート**: 優れたIDEサポート
+
+#### 5. 統合環境
+- **バックエンド・フロントエンド統合**: 同一プロジェクトで管理
+- **テンプレート機能**: HTMLテンプレートによるUI実装
+- **開発効率**: フルスタック開発が効率的
+
+## MCPサーバー連携設計
+
+### MCPサーバー連携アーキテクチャ
+
+#### 1. 連携概要
+```
+Auto Chat Maker ←→ MCPサーバー ←→ Microsoft Graph API ←→ Teams
+```
+
+#### 2. 連携コンポーネント
+
+##### MCPクライアント実装
+```python
+class MCPClient:
+    """MCPサーバーとの通信を管理するクライアント"""
+
+    def __init__(self, server_url: str, api_key: str):
+        self.server_url = server_url
+        self.api_key = api_key
+        self.session = aiohttp.ClientSession()
+
+    async def get_chat_message(self, message_id: str) -> Dict[str, Any]:
+        """チャットメッセージを取得"""
+        url = f"{self.server_url}/mcp/ms-365/chat/{message_id}"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+
+        async with self.session.get(url, headers=headers) as response:
+            return await response.json()
+
+    async def send_chat_reply(self, message_id: str, content: str) -> bool:
+        """チャット返信を送信"""
+        url = f"{self.server_url}/mcp/ms-365/chat/reply"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        data = {"message_id": message_id, "content": content}
+
+        async with self.session.post(url, headers=headers, json=data) as response:
+            return response.status == 200
+```
+
+##### Teamsチャットプラグイン統合
+```python
+class TeamsChatProcessor(MessageProcessor):
+    """Teamsチャット処理プラグイン（MCP連携版）"""
+
+    def __init__(self, mcp_client: MCPClient):
+        self.mcp_client = mcp_client
+
+    async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]:
+        """Teamsチャットメッセージを処理"""
+        # MCP経由でメッセージ詳細を取得
+        message_id = message.get("message_id")
+        chat_message = await self.mcp_client.get_chat_message(message_id)
+
+        return {
+            "message_id": message_id,
+            "content": chat_message.get("content"),
+            "sender": chat_message.get("sender"),
+            "thread_id": chat_message.get("thread_id"),
+            "sent_at": chat_message.get("sent_at")
+        }
+
+    async def send_reply(self, message_id: str, content: str) -> bool:
+        """Teamsチャット返信を送信"""
+        return await self.mcp_client.send_chat_reply(message_id, content)
+```
+
+#### 3. エラーハンドリング
+
+##### 接続エラー処理
+```python
+class MCPConnectionError(Exception):
+    """MCPサーバー接続エラー"""
+    pass
+
+class MCPClient:
+    async def get_chat_message(self, message_id: str) -> Dict[str, Any]:
+        try:
+            # MCPサーバーとの通信
+            async with self.session.get(url, headers=headers) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    raise MCPConnectionError(f"MCP server error: {response.status}")
+        except aiohttp.ClientError as e:
+            raise MCPConnectionError(f"Connection failed: {e}")
+```
+
+##### リトライ機能
+```python
+class MCPClient:
+    async def send_chat_reply_with_retry(self, message_id: str, content: str, max_retries: int = 3) -> bool:
+        """リトライ機能付きチャット返信送信"""
+        for attempt in range(max_retries):
+            try:
+                return await self.send_chat_reply(message_id, content)
+            except MCPConnectionError as e:
+                if attempt == max_retries - 1:
+                    raise e
+                await asyncio.sleep(2 ** attempt)  # 指数バックオフ
+```
+
+#### 4. 設定管理
+
+##### 環境変数設定
+```python
+class Settings:
+    mcp_server_url: Optional[str] = None
+    mcp_api_key: Optional[str] = None
+
+    class Config:
+        env_file = ".env"
+```
+
+##### 設定検証
+```python
+def validate_mcp_settings(settings: Settings) -> bool:
+    """MCP設定の検証"""
+    if not settings.mcp_server_url:
+        raise ValueError("MCP server URL is required")
+    if not settings.mcp_api_key:
+        raise ValueError("MCP API key is required")
+    return True
 ```
 
 ## レイヤー詳細
@@ -247,77 +398,100 @@ class PluginManager:
 ## 依存関係の方向
 
 ```
-API → アプリケーション → ドメイン ← インフラストラクチャ
+┌─────────────────────────────────────────────────────────────┐
+│                    Frameworks & Drivers                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   FastAPI   │  │   MCP       │  │   Claude    │        │
+│  │   Web UI    │  │   Server    │  │   API       │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  Interface Adapters                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │ Controllers │  │ Repositories│  │   External  │        │
+│  │ Middleware  │  │   Database  │  │   Services  │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Use Cases                                │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │ Process     │  │ Generate    │  │ Send Reply  │        │
+│  │ Message     │  │ Reply       │  │             │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Entities                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Message   │  │   Reply     │  │   User      │        │
+│  │   Thread    │  │   Option    │  │   Settings  │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-- 内側のレイヤーは外側のレイヤーに依存しない
-- 外側のレイヤーは内側のレイヤーのインターフェースに依存
-- 依存関係は内側に向かって流れる
-- プラグインはドメイン層のインターフェースに依存
+## データフロー
 
-## 設計原則
+### 1. メッセージ受信フロー
+```
+Webhook → API層(受信) → アプリケーション層(処理) → ドメイン層(エンティティ作成) → インフラ層(DB保存) → データ層(SQLite)
+```
 
-### 1. 依存性逆転の原則（Dependency Inversion Principle）
-- 高レベルのモジュールは低レベルのモジュールに依存しない
-- 両方とも抽象に依存する
-- 抽象は詳細に依存しない
+### 2. 返信生成フロー
+```
+AI判定 → アプリケーション層(生成) → ドメイン層(返信案エンティティ) → インフラ層(DB保存) → データ層(SQLite)
+```
 
-### 2. 単一責任の原則（Single Responsibility Principle）
-- 各クラスは1つの責任を持つ
-- 各レイヤーは明確な責任を持つ
-- 各プラグインは特定のメッセージタイプを処理する
+### 3. 返信送信フロー
+```
+UI選択 → アプリケーション層(送信) → インフラ層(MCP連携) → 外部連携層(MCPサーバー) → Teams(メッセージ送信)
+```
 
-### 3. 開放閉鎖の原則（Open-Closed Principle）
-- 拡張に対して開いている（新しいプラグインの追加）
-- 修正に対して閉じている（既存コードの変更不要）
+## セキュリティ設計
 
-### 4. リスコフ置換の原則（Liskov Substitution Principle）
-- サブタイプは基底タイプと置換可能
-- プラグインは共通インターフェースを満たす
+### 認証・認可
+- **OAuth2認証**: Microsoft 365認証を使用
+- **API認証**: MCPサーバーとの認証
+- **セッション管理**: サーバーサイドセッション
 
-### 5. インターフェース分離の原則（Interface Segregation Principle）
-- クライアントは使用しないインターフェースに依存しない
-- プラグインインターフェースは必要最小限のメソッドのみ定義
+### データ保護
+- **暗号化**: 機密データの暗号化
+- **アクセス制御**: ロールベースアクセス制御
+- **監査ログ**: 操作履歴の記録
 
-## 拡張性設計
+## パフォーマンス設計
 
-### 段階的拡張計画
+### 非同期処理
+- **FastAPI非同期**: 同時リクエスト処理
+- **バックグラウンド処理**: 重い処理の非同期実行
+- **キャッシュ**: メモリキャッシュによる高速化
 
-#### Phase 1: Teamsチャット対応（現在）
-- Teamsチャットの自動検知・返信案生成
-- 基本的なAI判定・生成機能
-- ユーザーインターフェース
+### スケーラビリティ
+- **水平スケーリング**: 複数インスタンス対応
+- **データベース**: 読み取り専用レプリカ対応
+- **負荷分散**: ロードバランサー対応
 
-#### Phase 2: Outlookメール対応（将来）
-- メール検知・返信機能の追加
-- 共通AI判定・生成ロジックの活用
-- 統合UIでの管理
+## 監視・ログ
 
-#### Phase 3: その他Microsoft 365サービス対応
-- ToDo、カレンダー等への対応
-- 統合的なコミュニケーション管理
+### ログ設計
+- **構造化ログ**: structlogによる構造化ログ
+- **ログレベル**: 適切なログレベルの設定
+- **ログローテーション**: ログファイルの自動ローテーション
 
-### 共通基盤設計
-
-#### メッセージ処理の共通インターフェース
-- プラグイン形式での実装
-- 設定による機能の有効/無効切り替え
-
-#### AI判定・生成ロジックの再利用
-- メッセージタイプに依存しない共通ロジック
-- プラグイン固有の前処理・後処理
-
-#### 通知・UIシステムの統一
-- 統合的な通知管理
-- メッセージタイプ別の表示制御
-
-#### データベース設計の拡張性
-- メッセージタイプによる拡張
-- 共通テーブルとプラグイン固有テーブルの分離
+### メトリクス
+- **パフォーマンス**: レスポンス時間の監視
+- **エラー率**: エラー発生率の監視
+- **リソース使用量**: CPU・メモリ使用量の監視
 
 ## 更新履歴
 
 - 初版作成: 2024年12月
 - Teams対応化: 2024年12月 - Teamsチャットベースに変更、プラグインアーキテクチャを追加
+- FastAPI採用理由追加: 2024年12月 - 技術スタック選択理由を詳細化
+- MCP連携設計追加: 2024年12月 - MCPサーバー連携の詳細設計を追加
 - 最終更新: 2024年12月
 - 更新者: 開発チーム
