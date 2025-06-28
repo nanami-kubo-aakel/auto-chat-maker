@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test lint format clean docs venv setup setup-venv
+.PHONY: help install install-dev test lint format clean docs venv setup setup-venv docs-install docs-serve docs-build docs-deploy docs-clean
 
 help:  ## このヘルプメッセージを表示
 	@echo "利用可能なコマンド:"
@@ -71,3 +71,25 @@ check-venv:  ## 仮想環境が有効かチェック
 	else \
 		echo "仮想環境が有効です: $$VIRTUAL_ENV"; \
 	fi
+
+# MkDocs関連のターゲット
+
+# MkDocsの依存関係をインストール
+docs-install:
+	pip install -r requirements-docs.txt
+
+# ローカルでドキュメントを確認
+docs-serve:
+	mkdocs serve
+
+# ドキュメントをビルド
+docs-build:
+	mkdocs build
+
+# GitHub Pagesにデプロイ
+docs-deploy:
+	mkdocs gh-deploy
+
+# ドキュメントのクリーンアップ
+docs-clean:
+	rm -rf site/

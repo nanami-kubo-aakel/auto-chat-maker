@@ -87,9 +87,38 @@ auto_chat_maker/
 
 プロジェクトへの貢献を歓迎します！詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
-## ドキュメント
+## 📚 ドキュメント
 
-- [要件定義](docs/requirements/)
-- [設計書](docs/design/)
-- [仕様書](docs/specification/)
-- [開発者ガイド](docs/developer-guide/)
+このプロジェクトのドキュメントは [MkDocs](https://www.mkdocs.org/) を使用して管理されています。
+
+### ドキュメントの確認方法
+
+#### 1. 依存関係のインストール
+```bash
+make docs-install
+```
+
+#### 2. ローカルでドキュメントを確認
+```bash
+make docs-serve
+```
+ブラウザで `http://127.0.0.1:8000` にアクセスしてドキュメントを確認できます。
+
+#### 3. ドキュメントをビルド
+```bash
+make docs-build
+```
+
+#### 4. GitHub Pagesにデプロイ（オプション）
+```bash
+make docs-deploy
+```
+
+### ドキュメント構成
+
+- **要件定義**: プロジェクトの目的、機能、制約の定義
+- **設計書**: システム設計とアーキテクチャ
+- **仕様書**: 実装詳細と技術仕様
+- **開発者ガイド**: 開発者向けガイド
+
+詳細は [ドキュメントサイト](http://127.0.0.1:8000) で確認してください。
