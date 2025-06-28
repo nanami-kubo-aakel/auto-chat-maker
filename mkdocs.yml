@@ -1,0 +1,48 @@
+site_name: Auto Chat Maker ドキュメント
+site_description: Auto Chat Makerプロジェクトの開発ドキュメント
+site_author: 開発チーム
+
+theme:
+  name: material
+  language: ja
+
+plugins:
+  - search
+
+nav:
+  - ホーム: index.md
+  - プロジェクト概要: README.md
+  - 要件定義:
+      - 概要: requirements/README.md
+      - ビジネス要件: requirements/business-requirements.md
+      - 機能要件: requirements/functional-requirements.md
+      - 非機能要件: requirements/non-functional-requirements.md
+      - 技術要件: requirements/technical-requirements.md
+      - 制約事項: requirements/constraints.md
+      - ユースケース:
+          - 概要: requirements/use-cases.md
+          - 詳細仕様: requirements/use-case-specifications.md
+          - ユースケース図: requirements/use-case-diagram.puml
+          - シーケンス図: requirements/sequence-diagram.puml
+      - 開発計画: requirements/development-plan.md
+  - 設計書:
+      - 概要: design/README.md
+      - システムアーキテクチャ: design/system-architecture.md
+      - 技術設計: design/technical-design.md
+      - データベース設計:
+          - スキーマ設計: design/database-schema.md
+          - ER図: design/er-diagram.puml
+      - フェーズ別設計:
+          - フェーズ1 MCP統合設計: design/phase1-5-mcp-integration-design.md
+          - フェーズ1 クラス設計: design/phase1-class-design.md
+          - フェーズ2 コア機能設計: design/phase2-core-functionality-design.md
+          - フェーズ3 データ・UI設計: design/phase3-data-ui-design.md
+  - 仕様書:
+      - 概要: specification/README.md
+      - 技術仕様: specification/technical-specification.md
+      - アーキテクチャ仕様: specification/architecture.md
+      - Azure AD認証仕様: specification/azure-ad-auth-spec.md
+      - MCP統合仕様: specification/mcp-integration-spec.md
+      - Webhook処理仕様: specification/webhook-processing-spec.md
+  - 開発者ガイド:
+      - 概要: developer-guide/README.md
