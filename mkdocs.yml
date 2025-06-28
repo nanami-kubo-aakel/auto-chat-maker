@@ -11,7 +11,6 @@ plugins:
 
 nav:
   - ホーム: index.md
-  - プロジェクト概要: README.md
   - 要件定義:
       - 概要: requirements/README.md
       - ビジネス要件: requirements/business-requirements.md
@@ -22,8 +21,8 @@ nav:
       - ユースケース:
           - 概要: requirements/use-cases.md
           - 詳細仕様: requirements/use-case-specifications.md
-          - ユースケース図: requirements/use-case-diagram.puml
-          - シーケンス図: requirements/sequence-diagram.puml
+          - ユースケース図: requirements/use-case-diagram.md
+          - シーケンス図: requirements/sequence-diagram.md
       - 開発計画: requirements/development-plan.md
   - 設計書:
       - 概要: design/README.md
@@ -31,7 +30,7 @@ nav:
       - 技術設計: design/technical-design.md
       - データベース設計:
           - スキーマ設計: design/database-schema.md
-          - ER図: design/er-diagram.puml
+          - ER図: design/er-diagram.md
       - フェーズ別設計:
           - フェーズ1 MCP統合設計: design/phase1-5-mcp-integration-design.md
           - フェーズ1 クラス設計: design/phase1-class-design.md
