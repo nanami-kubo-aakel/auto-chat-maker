@@ -37,6 +37,8 @@ pre-commit install
 - ドキュメント文字列の記述
 - ログ出力の実装
 
+詳細な開発ルールについては [開発者ガイド](docs/developer-guide/README.md) を参照してください。
+
 ## 開発コマンド
 
 Makefileを使用して開発作業を効率化できます：
