@@ -5,9 +5,13 @@ site_author: 開発チーム
 theme:
   name: material
   language: ja
+  custom_dir: docs/stylesheets
+  extra_css:
+    - extra.css
 
 plugins:
   - search
+  - mermaid2
 
 nav:
   - ホーム: index.md

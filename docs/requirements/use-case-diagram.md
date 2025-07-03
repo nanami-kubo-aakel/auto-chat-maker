@@ -6,9 +6,83 @@ Auto Chat Makerシステムのユースケース図です。
 
 この図は、Auto Chat Makerシステムの主要な機能とアクターの関係を示しています。
 
+
+
 ## ユースケース図
 
-![ユースケース図](https://www.plantuml.com/plantuml/png/SoWkIImgAStDuU8gBKbL2D0rKj2rKl1DpSd91m00)
+```mermaid
+graph TB
+    subgraph "Auto Chat Maker システム"
+        subgraph "主要ユースケース"
+            UC1[Teamsチャット自動検知・返信案生成]
+            UC2[返信案選択・確定]
+            UC3[Teamsチャット返信実行]
+            UC4[システム設定管理]
+        end
+
+        subgraph "拡張ユースケース"
+            UC5[返信パターン学習]
+            UC6[バッチ処理]
+            UC7[将来的なメール対応]
+        end
+
+        subgraph "包含ユースケース"
+            UC8[チャットメッセージ情報取得]
+            UC9[返信必要性判定]
+            UC10[返信案生成]
+            UC11[ユーザー通知]
+            UC12[送信結果確認]
+            UC13[処理ログ記録]
+        end
+    end
+
+    subgraph "アクター"
+        User[エンドユーザー]
+        Admin[システム管理者]
+        GraphAPI[Microsoft Graph API]
+        MCPServer[MCPサーバー]
+        AIService[AIサービス]
+        NotificationService[通知サービス]
+    end
+
+    %% アクターとユースケースの関係
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    Admin --> UC4
+    Admin --> UC6
+
+    GraphAPI --> UC1
+    MCPServer --> UC1
+    MCPServer --> UC3
+    AIService --> UC1
+    AIService --> UC5
+    NotificationService --> UC1
+
+    %% 包含関係
+    UC1 -.-> UC8
+    UC1 -.-> UC9
+    UC1 -.-> UC10
+    UC1 -.-> UC11
+    UC3 -.-> UC12
+    UC3 -.-> UC13
+
+    %% 拡張関係
+    UC2 -.-> UC5
+    UC4 -.-> UC6
+    UC1 -.-> UC7
+
+    %% スタイル定義
+    classDef actorStyle fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef mainUseCase fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    classDef extendUseCase fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef includeUseCase fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+    class User,Admin,GraphAPI,MCPServer,AIService,NotificationService actorStyle
+    class UC1,UC2,UC3,UC4 mainUseCase
+    class UC5,UC6,UC7 extendUseCase
+    class UC8,UC9,UC10,UC11,UC12,UC13 includeUseCase
+```
 
 ## 説明
 
@@ -34,103 +108,19 @@ Auto Chat Makerシステムのユースケース図です。
 - **バッチ処理**: 定期的な処理の実行
 - **将来的なメール対応**: Outlookメール対応（拡張予定）
 
-## PlantUMLソースコード
+### 包含ユースケース
 
-```plantuml
-@startuml Auto Chat Maker Use Case Diagram
+- **チャットメッセージ情報取得**: Teamsチャットからのメッセージ情報取得
+- **返信必要性判定**: AIによる返信の必要性判定
+- **返信案生成**: AIによる返信案の生成
+- **ユーザー通知**: ユーザーへの通知送信
+- **送信結果確認**: 送信結果の確認
+- **処理ログ記録**: 処理ログの記録
 
-!theme plain
-skinparam actorStyle awesome
-skinparam usecase {
-    BackgroundColor LightBlue
-    BorderColor DarkBlue
-}
+### 関係性の説明
 
-title Auto Chat Maker システム - ユースケース図（Teamsチャット対応）
+- **実線矢印**: アクターとユースケースの直接的な関係
+- **点線矢印（包含）**: ユースケース間の包含関係（<<include>>）
+- **点線矢印（拡張）**: ユースケース間の拡張関係（<<extend>>）
 
-' アクター定義
-actor "エンドユーザー" as User
-actor "システム管理者" as Admin
-actor "Microsoft Graph API" as GraphAPI
-actor "MCPサーバー" as MCPServer
-actor "AIサービス" as AIService
-actor "通知サービス" as NotificationService
-
-' システム境界
-rectangle "Auto Chat Maker システム" {
-
-    ' 主要ユースケース
-    usecase "Teamsチャット自動検知・返信案生成" as UC1
-    usecase "返信案選択・確定" as UC2
-    usecase "Teamsチャット返信実行" as UC3
-    usecase "システム設定管理" as UC4
-
-    ' 拡張ユースケース
-    usecase "返信パターン学習" as UC5
-    usecase "バッチ処理" as UC6
-    usecase "将来的なメール対応" as UC7
-
-    ' 包含ユースケース
-    usecase "チャットメッセージ情報取得" as UC8
-    usecase "返信必要性判定" as UC9
-    usecase "返信案生成" as UC10
-    usecase "ユーザー通知" as UC11
-    usecase "送信結果確認" as UC12
-    usecase "処理ログ記録" as UC13
-}
-
-' 関係性定義
-User --> UC1
-User --> UC2
-User --> UC3
-Admin --> UC4
-Admin --> UC6
-
-GraphAPI --> UC1
-MCPServer --> UC1
-MCPServer --> UC3
-AIService --> UC1
-AIService --> UC5
-NotificationService --> UC1
-
-' 包含関係
-UC1 ..> UC8 : <<include>>
-UC1 ..> UC9 : <<include>>
-UC1 ..> UC10 : <<include>>
-UC1 ..> UC11 : <<include>>
-UC3 ..> UC12 : <<include>>
-UC3 ..> UC13 : <<include>>
-
-' 拡張関係
-UC2 ..> UC5 : <<extend>>
-UC4 ..> UC6 : <<extend>>
-UC1 ..> UC7 : <<extend>>
-
-' ノート
-note right of UC1
-  Teamsチャットの新着メッセージを
-  自動検知し、AIによる返信案を生成
-end note
-
-note right of UC2
-  ユーザーが返信案を選択・編集し、
-  確定する
-end note
-
-note right of UC3
-  確定された返信内容を
-  MCP経由でTeamsチャットに送信
-end note
-
-note right of UC4
-  システム管理者が
-  システム設定を管理
-end note
-
-note right of UC7
-  将来的なOutlookメール対応
-  （拡張予定）
-end note
-
-@enduml
-```
+詳細な開発ルールについては [開発者ガイド](../developer-guide/README.md) を参照してください。

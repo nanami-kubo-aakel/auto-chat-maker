@@ -54,8 +54,8 @@ Auto Chat Makerシステムは、Microsoft Graph Webhook／MCPサーバー（`ms
 ### ユースケース
 - `use-cases.md` - ユースケース概要
 - `use-case-specifications.md` - ユースケース詳細仕様
-- `use-case-diagram.puml` - ユースケース図
-- `sequence-diagram.puml` - シーケンス図
+- `use-case-diagram.md` - ユースケース図（Mermaid形式）
+- `sequence-diagram.md` - シーケンス図（Mermaid形式）
 
 ### 開発計画
 - `development-plan.md` - 開発計画書

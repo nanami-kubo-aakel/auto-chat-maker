@@ -25,9 +25,9 @@ Microsoft Graph Webhook／MCPサーバー（`ms-365-mcp-server`）を用いて�
 ## 5. 拡張性要件
 
 ### 5.1 段階的拡張計画
-- **Phase 1**: Teamsチャット対応（現在）
-- **Phase 2**: Outlookメール対応
-- **Phase 3**: その他Microsoft 365サービス対応（ToDo、カレンダー等）
+1. Teamsチャット対応（現在）
+2. Outlookメール対応
+3. その他Microsoft 365サービス対応（ToDo、カレンダー等）
 
 ### 5.2 共通基盤設計
 - メッセージ処理の共通インターフェース

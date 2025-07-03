@@ -8,7 +8,67 @@ Auto Chat MakerシステムのER図（Entity Relationship Diagram）です。
 
 ## ER図
 
-![ER図](https://www.plantuml.com/plantuml/png/SoWkIImgAStDuU8gBKbL2D0rKj2rKl1DpSd91m00)
+```mermaid
+erDiagram
+    users {
+        UUID id PK
+        VARCHAR email UK
+        VARCHAR name
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    message_types {
+        UUID id PK
+        VARCHAR type_name UK
+        TEXT description
+        BOOLEAN is_active
+        TIMESTAMP created_at
+    }
+
+    chat_messages {
+        UUID id PK
+        UUID user_id FK
+        VARCHAR message_id UK
+        TEXT content
+        VARCHAR sender
+        VARCHAR thread_id
+        VARCHAR message_type
+        VARCHAR channel_id
+        VARCHAR team_id
+        TIMESTAMP sent_at
+        TIMESTAMP processed_at
+        TIMESTAMP created_at
+    }
+
+    reply_suggestions {
+        UUID id PK
+        UUID chat_message_id FK
+        TEXT content
+        DECIMAL confidence_score
+        BOOLEAN selected
+        TIMESTAMP created_at
+    }
+
+    subscriptions {
+        UUID id PK
+        UUID user_id FK
+        VARCHAR subscription_id
+        VARCHAR resource
+        VARCHAR resource_type
+        VARCHAR webhook_url
+        VARCHAR change_type
+        TIMESTAMP expires_at
+        BOOLEAN is_active
+        TIMESTAMP created_at
+    }
+
+    %% リレーションシップ定義
+    users ||--o{ chat_messages : "has"
+    users ||--o{ subscriptions : "has"
+    message_types ||--o{ chat_messages : "categorizes"
+    chat_messages ||--o{ reply_suggestions : "generates"
+```
 
 ## 説明
 
@@ -24,7 +84,7 @@ Auto Chat MakerシステムのER図（Entity Relationship Diagram）です。
 
 3. **chat_messages（チャットメッセージ）**
    - Teamsチャットのメッセージ情報
-   - 送信者、内容、スレッド情報を管理
+   - 送信者、内容、スレッド情報、チャンネルID、チームIDを管理
 
 4. **reply_suggestions（返信案）**
    - AIが生成した返信案
@@ -45,131 +105,54 @@ Auto Chat MakerシステムのER図（Entity Relationship Diagram）です。
 
 各テーブルには適切なインデックスが設定されており、クエリパフォーマンスを最適化しています。
 
-## PlantUMLソースコード
+#### chat_messages テーブル
+- `user_id` (FK)
+- `message_id` (UNIQUE)
+- `sent_at`
+- `thread_id`
+- `channel_id`
+- `team_id`
+- `processed_at`
 
-```plantuml
-@startuml Auto Chat Maker ER Diagram
+#### reply_suggestions テーブル
+- `chat_message_id` (FK)
+- `selected`
+- `created_at`
+- `confidence_score`
 
-!theme plain
-skinparam entity {
-    BackgroundColor LightBlue
-    BorderColor DarkBlue
-    FontColor Black
-    FontSize 12
-}
+#### subscriptions テーブル
+- `user_id` (FK)
+- `subscription_id`
+- `expires_at`
+- `resource_type`
+- `is_active`
 
-skinparam relationship {
-    Color DarkBlue
-    FontColor DarkBlue
-    FontSize 10
-}
+### データ型の説明
 
-title Auto Chat Maker システム - ER図（Entity Relationship Diagram）
+- **UUID**: 一意識別子（Primary Key、Foreign Key）
+- **VARCHAR**: 可変長文字列
+- **TEXT**: 長文テキスト
+- **DECIMAL**: 小数点付き数値
+- **BOOLEAN**: 真偽値
+- **TIMESTAMP**: 日時情報
 
-' エンティティ定義
-entity "users" as users {
-    * id : UUID (PK)
-    --
-    * email : VARCHAR(255) (UNIQUE)
-    * name : VARCHAR(255)
-    created_at : TIMESTAMP
-    updated_at : TIMESTAMP
-}
+### 外部キー制約
 
-entity "message_types" as message_types {
-    * id : UUID (PK)
-    --
-    * type_name : VARCHAR(50) (UNIQUE)
-    description : TEXT
-    is_active : BOOLEAN
-    created_at : TIMESTAMP
-}
+- `chat_messages.user_id` → `users.id`
+- `reply_suggestions.chat_message_id` → `chat_messages.id`
+- `subscriptions.user_id` → `users.id`
 
-entity "chat_messages" as chat_messages {
-    * id : UUID (PK)
-    --
-    * user_id : UUID (FK)
-    * message_id : VARCHAR(255) (UNIQUE)
-    * content : TEXT
-    * sender : VARCHAR(255)
-    * thread_id : VARCHAR(255)
-    * message_type : VARCHAR(50)
-    sent_at : TIMESTAMP
-    processed_at : TIMESTAMP
-    created_at : TIMESTAMP
-}
+### 一意制約
 
-entity "reply_suggestions" as reply_suggestions {
-    * id : UUID (PK)
-    --
-    * chat_message_id : UUID (FK)
-    * content : TEXT
-    confidence_score : DECIMAL(3,2)
-    selected : BOOLEAN
-    created_at : TIMESTAMP
-}
+- `users.email`: メールアドレスの重複禁止
+- `chat_messages.message_id`: TeamsメッセージIDの重複禁止
+- `message_types.type_name`: メッセージタイプ名の重複禁止
 
-entity "subscriptions" as subscriptions {
-    * id : UUID (PK)
-    --
-    * user_id : UUID (FK)
-    * subscription_id : VARCHAR(255)
-    * resource : VARCHAR(255)
-    * resource_type : VARCHAR(50)
-    expires_at : TIMESTAMP
-    created_at : TIMESTAMP
-}
+詳細な開発ルールについては [開発者ガイド](../developer-guide/README.md) を参照してください。
 
-' リレーションシップ定義
-users ||--o{ chat_messages : "has"
-users ||--o{ subscriptions : "has"
-message_types ||--o{ chat_messages : "categorizes"
-chat_messages ||--o{ reply_suggestions : "generates"
+## 更新履歴
 
-' カーディナリティの説明
-note right of users
-  1人のユーザーは複数の
-  チャットメッセージを持つ
-end note
-
-note right of chat_messages
-  1つのチャットメッセージは
-  複数の返信案を生成する
-end note
-
-note right of subscriptions
-  1人のユーザーは複数の
-  サブスクリプションを持つ
-end note
-
-note right of message_types
-  1つのメッセージタイプは
-  複数のチャットメッセージに
-  適用される
-end note
-
-' インデックス情報
-note bottom of chat_messages
-  インデックス:
-  - user_id (FK)
-  - message_id (UNIQUE)
-  - sent_at
-  - thread_id
-end note
-
-note bottom of reply_suggestions
-  インデックス:
-  - chat_message_id (FK)
-  - selected
-  - created_at
-end note
-
-note bottom of subscriptions
-  インデックス:
-  - user_id (FK)
-  - subscription_id
-  - expires_at
-end note
-
-@enduml
-```
+- 初版作成: 2024年12月
+- データベーススキーマとの整合性確保: 2024年12月 - channel_id、team_idカラムを追加、subscriptionsテーブルの詳細化
+- 最終更新: 2024年12月
+- 更新者: 開発チーム

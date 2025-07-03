@@ -6,31 +6,6 @@
 
 設計書は、要件定義に基づいてシステムの具体的な実装方法を定義する資料です。アーキテクチャ、データベース、API、UIなどの各側面について詳細な設計を行い、開発チームが一貫した実装を行えるようにします。
 
-## 含まれる資料
-
-### アーキテクチャ設計
-- **システム全体構造設計書** - `system-architecture.md`
-- クリーンアーキテクチャに基づくシステム構成
-- コンポーネント間の関係性とデータフロー
-- セキュリティアーキテクチャ
-
-### 技術設計
-- **技術設計書** - `technical-design.md`
-- 技術スタックの選定と選択理由
-- 技術構成の詳細
-- 拡張性を考慮した技術設計
-
-### データベース設計
-- **データベーススキーマ設計書** - `database-schema.md`
-- テーブル定義とリレーション
-- サンプルデータ
-- 拡張性を考慮した設計
-
-### 視覚的設計
-- **ER図** - `er-diagram.puml`
-- データベースのエンティティ関係図
-- PlantUMLによる視覚的表現
-
 ## 設計方針
 
 ### クリーンアーキテクチャ
@@ -51,25 +26,31 @@
 ## ファイル構成
 
 ### アーキテクチャ設計
-- ✅ `system-architecture.md` - システム全体構造設計書
+- ✅ [`system-architecture.md`](system-architecture.md) - システム全体構造設計書
 - システム全体の構造とコンポーネント間関係性
 - データフローと処理フロー
 - セキュリティ設計
 
 ### 技術設計
-- ✅ `technical-design.md` - 技術設計書
+- ✅ [`technical-design.md`](technical-design.md) - 技術設計書
 - 技術スタックの選定と選択理由
 - 技術構成の詳細
 - 拡張性を考慮した技術設計
 
 ### データベース設計
-- ✅ `database-schema.md` - データベーススキーマ設計書
+- ✅ [`database-schema.md`](database-schema.md) - データベーススキーマ設計書
 - 詳細なテーブル定義とサンプルデータ
 - 拡張性を考慮したスキーマ設計
 
 ### 視覚的設計
-- ✅ `er-diagram.puml` - データベースのエンティティ関係図
-- PlantUMLによる視覚的表現
+- ✅ [`er-diagram.md`](er-diagram.md) - データベースのエンティティ関係図
+- Mermaidによる視覚的表現（機密性確保のためPlantUMLは使用禁止）
+
+### フェーズ別設計
+- ✅ [`phase1-class-design.md`](phase1-class-design.md) - フェーズ1: クラス設計
+- ✅ [`phase2-core-functionality-design.md`](phase2-core-functionality-design.md) - フェーズ2: コア機能設計
+- ✅ [`phase3-data-ui-design.md`](phase3-data-ui-design.md) - フェーズ3: データ・UI設計
+- ✅ [`phase1-5-mcp-integration-design.md`](phase1-5-mcp-integration-design.md) - フェーズ1-5: MCP統合設計
 
 ## 設計書の特徴
 
@@ -87,37 +68,6 @@
 - バージョン管理
 - 変更履歴の記録
 - レビュープロセス
-
-## 設計書の活用方法
-
-### 開発者向け
-- `system-architecture.md` - システム全体の構造とコンポーネント間関係性
-- `technical-design.md` - 技術スタックと技術構成
-- `database-schema.md` - データベーススキーマ
-- `er-diagram.puml` - データベースのエンティティ関係図
-
-### アーキテクト向け
-- `system-architecture.md` - システム全体構造設計書
-- `technical-design.md` - 技術設計書
-- プラグインアーキテクチャ
-
-### データベース設計者向け
-- `database-schema.md` - データベーススキーマ設計書
-- `er-diagram.puml` - データベースのエンティティ関係図
-
-## 設計書の確認方法
-
-### システム全体構造の確認
-- `system-architecture.md` - システム全体の構造とコンポーネント間関係性
-- データフローと処理フロー
-
-### 技術設計の確認
-- `technical-design.md` - 技術スタックと技術構成
-- 技術選定の理由と拡張性設計
-
-### データベーススキーマの確認
-- `database-schema.md` - 詳細なテーブル定義
-- `er-diagram.puml` - データベースのエンティティ関係図
 
 ## 更新履歴
 

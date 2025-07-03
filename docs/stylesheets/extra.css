@@ -63,3 +63,37 @@ h1, h2, h3, h4, h5, h6 {
 .md-clipboard:hover {
     color: #333;
 }
+
+/* 箇条書きと番号付きリストの改善 */
+.md-typeset ul,
+.md-typeset ol {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.md-typeset ul li,
+.md-typeset ol li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+/* ネストしたリストの改善 */
+.md-typeset ul ul,
+.md-typeset ol ol,
+.md-typeset ul ol,
+.md-typeset ol ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* リストアイテムの間隔調整 */
+.md-typeset li {
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+/* 長いリストアイテムの改行 */
+.md-typeset li p {
+    margin: 0;
+    display: inline;
+}
