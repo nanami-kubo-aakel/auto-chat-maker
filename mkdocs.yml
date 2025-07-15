@@ -46,6 +46,13 @@ nav:
           - MCP統合仕様: design/mcp-integration-spec.md
           - Webhook処理仕様: design/webhook-processing-spec.md
   - 開発ルール:
-      - 概要: instructions/README.md
+      - 開発者ガイド: instructions/developer-guide.md
+      - 環境設定ガイド: instructions/environment-setup.md
+      - コントリビューションガイド: instructions/contributing.md
   - スケジュール:
       - 開発計画: schedule/development-plan.md
+      - フェーズ別詳細設計:
+          - フェーズ1 クラス設計: design/phase1-class-design.md
+          - フェーズ1.5 MCP統合設計: design/phase1-5-mcp-integration-design.md
+          - フェーズ2 コア機能設計: design/phase2-core-functionality-design.md
+          - フェーズ3 データ・UI設計: design/phase3-data-ui-design.md

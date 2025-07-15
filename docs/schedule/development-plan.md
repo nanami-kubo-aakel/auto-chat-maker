@@ -95,7 +95,15 @@ src/auto_chat_maker/
 
 ## 実装フェーズ詳細
 
+> **詳細設計書へのリンク**: 各フェーズの詳細なクラス設計については、以下の設計書を参照してください。
+> - [Phase 1 クラス設計](../design/phase1-class-design.md) - 基盤構築の詳細クラス設計
+> - [Phase 1.5 MCP統合設計](../design/phase1-5-mcp-integration-design.md) - MCP連携の詳細実装
+> - [Phase 2 コア機能設計](../design/phase2-core-functionality-design.md) - AI機能とWebhook処理の詳細設計
+> - [Phase 3 データ・UI設計](../design/phase3-data-ui-design.md) - データベースとWeb UIの詳細設計
+
 ### Phase 1: 基盤構築（1-2週間）
+
+> **詳細設計書**: [Phase 1 クラス設計](../design/phase1-class-design.md)
 
 #### Week 1: プロジェクト基盤
 **目標**: 基本的なアプリケーション構造の構築
@@ -172,6 +180,8 @@ Day 5: 基盤機能の統合テスト
 
 ### Phase 1.5: MCP連携詳細実装（1週間追加）
 
+> **詳細設計書**: [Phase 1.5 MCP統合設計](../design/phase1-5-mcp-integration-design.md)
+
 **目標**: MCPサーバーとの詳細連携実装
 
 **実装内容**:
@@ -211,6 +221,8 @@ Day 5: Webhookサブスクリプション管理の実装
 ```
 
 ### Phase 2: コア機能実装（2-3週間）
+
+> **詳細設計書**: [Phase 2 コア機能設計](../design/phase2-core-functionality-design.md)
 
 #### Week 3: AI機能実装
 **目標**: Claude API連携とAI判定・生成機能の実装
@@ -299,6 +311,8 @@ Day 5: 全機能の統合テスト
 ```
 
 ### Phase 3: データ管理・UI（1-2週間）
+
+> **詳細設計書**: [Phase 3 データ・UI設計](../design/phase3-data-ui-design.md)
 
 #### Week 6: データベース実装
 **目標**: SQLiteデータベースとリポジトリの実装

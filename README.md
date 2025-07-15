@@ -37,7 +37,7 @@ pre-commit install
 - ドキュメント文字列の記述
 - ログ出力の実装
 
-詳細な開発ルールについては [開発者ガイド](docs/developer-guide/README.md) を参照してください。
+詳細な開発ルールについては [開発者ガイド](docs/instructions/README.md) を参照してください。
 
 ## 開発コマンド
 
@@ -87,7 +87,7 @@ auto_chat_maker/
 
 ## コントリビューション
 
-プロジェクトへの貢献を歓迎します！詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+プロジェクトへの貢献を歓迎します！詳細は [コントリビューションガイド](docs/instructions/contributing.md) を参照してください。
 
 ## 📚 ドキュメント
 
