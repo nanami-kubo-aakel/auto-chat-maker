@@ -14,71 +14,74 @@ logger = get_logger(__name__)
 
 
 async def auto_chat_maker_exception_handler(
-    request: Request, exc: AutoChatMakerException
+    request: Request, exc: Exception
 ) -> JSONResponse:
     """Auto Chat Maker例外のハンドラー"""
-    logger.error(
-        "Auto Chat Maker例外が発生",
-        error_code=exc.error_code,
-        message=exc.message,
-        details=exc.details,
-        path=request.url.path,
-    )
-
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "error": {
-                "code": exc.error_code or "INTERNAL_ERROR",
-                "message": exc.message,
-                "details": exc.details,
-            }
-        },
-    )
+    if isinstance(exc, AutoChatMakerException):
+        logger.error(
+            "Auto Chat Maker例外が発生",
+            error_code=exc.error_code,
+            message=exc.message,
+            details=exc.details,
+            path=request.url.path,
+        )
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "error": {
+                    "code": exc.error_code or "INTERNAL_ERROR",
+                    "message": exc.message,
+                    "details": exc.details,
+                }
+            },
+        )
+    return await general_exception_handler(request, exc)
 
 
 async def validation_exception_handler(
-    request: Request, exc: RequestValidationError
+    request: Request, exc: Exception
 ) -> JSONResponse:
     """バリデーション例外のハンドラー"""
-    logger.error(
-        "バリデーションエラーが発生",
-        errors=exc.errors(),
-        path=request.url.path,
-    )
-
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={
-            "error": {
-                "code": "VALIDATION_ERROR",
-                "message": "リクエストのバリデーションに失敗しました",
-                "details": exc.errors(),
-            }
-        },
-    )
+    if isinstance(exc, RequestValidationError):
+        logger.error(
+            "バリデーションエラーが発生",
+            errors=exc.errors(),
+            path=request.url.path,
+        )
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "リクエストのバリデーションに失敗しました",
+                    "details": exc.errors(),
+                }
+            },
+        )
+    return await general_exception_handler(request, exc)
 
 
 async def http_exception_handler(
-    request: Request, exc: StarletteHTTPException
+    request: Request, exc: Exception
 ) -> JSONResponse:
     """HTTP例外のハンドラー"""
-    logger.error(
-        "HTTP例外が発生",
-        status_code=exc.status_code,
-        detail=exc.detail,
-        path=request.url.path,
-    )
-
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "error": {
-                "code": f"HTTP_{exc.status_code}",
-                "message": exc.detail,
-            }
-        },
-    )
+    if isinstance(exc, StarletteHTTPException):
+        logger.error(
+            "HTTP例外が発生",
+            status_code=exc.status_code,
+            detail=exc.detail,
+            path=request.url.path,
+        )
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "error": {
+                    "code": f"HTTP_{exc.status_code}",
+                    "message": exc.detail,
+                }
+            },
+        )
+    return await general_exception_handler(request, exc)
 
 
 async def general_exception_handler(

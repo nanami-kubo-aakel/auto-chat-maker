@@ -33,7 +33,10 @@ class ChatMessage(BaseModel):
         from_attributes = True
 
     def __str__(self) -> str:
-        return f"ChatMessage(id={self.id}, message_id={self.message_id}, sender={self.sender_name})"
+        return (
+            f"ChatMessage(id={self.id}, message_id={self.message_id}, "
+            f"sender={self.sender_name})"
+        )
 
     def __repr__(self) -> str:
         return self.__str__()

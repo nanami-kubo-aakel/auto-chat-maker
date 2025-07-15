@@ -76,7 +76,7 @@ class Settings(BaseSettings):
         mode="before",
     )
     @classmethod
-    def empty_str_to_none(cls, v):
+    def empty_str_to_none(cls, v: object) -> object:
         if isinstance(v, str) and v.strip() == "":
             return None
         return v

@@ -12,15 +12,13 @@ t-wada氏のTDDの考え方に基づいて実装:
 import os
 from unittest.mock import patch
 
-import pytest
-
 from auto_chat_maker.config.settings import Settings, get_settings
 
 
 class TestSettings:
     """Settingsクラスのテスト"""
 
-    def test_settings_default_values(self):
+    def test_settings_default_values(self) -> None:
         """デフォルト値が正しく設定されることをテスト"""
         # Arrange & Act
         with patch.dict(os.environ, {}, clear=True):
@@ -36,7 +34,7 @@ class TestSettings:
         assert settings.database_url == "sqlite:///./auto_chat_maker.db"
         assert settings.database_echo is False
 
-    def test_settings_environment_variables(self):
+    def test_settings_environment_variables(self) -> None:
         """環境変数が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -64,7 +62,7 @@ class TestSettings:
         assert settings.database_url == "sqlite:///./test.db"
         assert settings.database_echo is True
 
-    def test_settings_azure_config(self):
+    def test_settings_azure_config(self) -> None:
         """Azure AD設定が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -89,7 +87,7 @@ class TestSettings:
         )
         assert settings.azure_ad_scopes == "Chat.Read,User.Read"
 
-    def test_settings_claude_config(self):
+    def test_settings_claude_config(self) -> None:
         """Claude API設定が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -111,7 +109,7 @@ class TestSettings:
         assert settings.claude_max_tokens == 2000
         assert settings.claude_temperature == 0.5
 
-    def test_settings_mcp_config(self):
+    def test_settings_mcp_config(self) -> None:
         """MCPサーバー設定が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -135,7 +133,7 @@ class TestSettings:
         assert settings.mcp_connection_timeout == 60
         assert settings.mcp_max_retries == 5
 
-    def test_settings_webhook_config(self):
+    def test_settings_webhook_config(self) -> None:
         """Webhook設定が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -155,7 +153,7 @@ class TestSettings:
         assert settings.webhook_timeout == 20
         assert settings.webhook_subscription_expiration == 7200
 
-    def test_settings_reply_generation_config(self):
+    def test_settings_reply_generation_config(self) -> None:
         """返信生成設定が正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -175,7 +173,7 @@ class TestSettings:
         assert settings.reply_quality_threshold == 0.9
         assert settings.max_reply_suggestions == 5
 
-    def test_settings_feature_flags(self):
+    def test_settings_feature_flags(self) -> None:
         """機能フラグが正しく読み込まれることをテスト"""
         # Arrange
         test_env = {
@@ -195,7 +193,7 @@ class TestSettings:
         assert settings.enable_ai_processing is False
         assert settings.enable_webhook_processing is True
 
-    def test_settings_optional_fields(self):
+    def test_settings_optional_fields(self) -> None:
         """オプションフィールドがNoneの場合のテスト"""
         # Arrange
         test_env = {
@@ -217,7 +215,7 @@ class TestSettings:
         assert settings.mcp_server_url is None
         assert settings.webhook_secret is None
 
-    def test_settings_case_insensitive(self):
+    def test_settings_case_insensitive(self) -> None:
         """環境変数名が大文字小文字を区別しないことをテスト"""
         # Arrange
         test_env = {
@@ -237,7 +235,7 @@ class TestSettings:
 class TestGetSettings:
     """get_settings関数のテスト"""
 
-    def test_get_settings_returns_singleton(self):
+    def test_get_settings_returns_singleton(self) -> None:
         """get_settingsが同じインスタンスを返すことをテスト"""
         # Act
         settings1 = get_settings()
@@ -246,7 +244,7 @@ class TestGetSettings:
         # Assert
         assert settings1 is settings2
 
-    def test_get_settings_returns_settings_instance(self):
+    def test_get_settings_returns_settings_instance(self) -> None:
         """get_settingsがSettingsインスタンスを返すことをテスト"""
         # Act
         settings = get_settings()

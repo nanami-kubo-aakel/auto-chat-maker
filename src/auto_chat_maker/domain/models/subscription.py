@@ -31,7 +31,11 @@ class Subscription(BaseModel):
         from_attributes = True
 
     def __str__(self) -> str:
-        return f"Subscription(id={self.id}, subscription_id={self.subscription_id}, resource={self.resource})"
+        return (
+            f"Subscription(id={self.id}, "
+            f"subscription_id={self.subscription_id}, "
+            f"resource={self.resource})"
+        )
 
     def __repr__(self) -> str:
         return self.__str__()

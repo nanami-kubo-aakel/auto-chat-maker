@@ -3,6 +3,7 @@
 """
 import logging
 import sys
+from typing import Any, cast
 
 import structlog
 from structlog.stdlib import LoggerFactory
@@ -48,7 +49,7 @@ class LoggerConfig:
 
     def get_logger(self, name: str) -> structlog.stdlib.BoundLogger:
         """ロガーを取得"""
-        return structlog.get_logger(name)
+        return cast(structlog.stdlib.BoundLogger, structlog.get_logger(name))
 
     def setup_logging(self) -> None:
         """外部から明示的にログ設定を初期化"""
@@ -71,14 +72,14 @@ def configure_logging(
 class AppLogger:
     """アプリケーションログクラス"""
 
-    def __init__(self, name: str):
-        self.logger = get_logger(name)
+    def __init__(self, name: str) -> None:
+        self.logger: structlog.stdlib.BoundLogger = get_logger(name)
 
-    def info(self, message: str, **kwargs) -> None:
+    def info(self, message: str, **kwargs: Any) -> None:
         self.logger.info(message, **kwargs)
 
-    def error(self, message: str, **kwargs) -> None:
+    def error(self, message: str, **kwargs: Any) -> None:
         self.logger.error(message, **kwargs)
 
-    def debug(self, message: str, **kwargs) -> None:
+    def debug(self, message: str, **kwargs: Any) -> None:
         self.logger.debug(message, **kwargs)

@@ -28,7 +28,10 @@ class ReplySuggestion(BaseModel):
         from_attributes = True
 
     def __str__(self) -> str:
-        return f"ReplySuggestion(id={self.id}, message_id={self.message_id}, confidence={self.confidence_score})"
+        return (
+            f"ReplySuggestion(id={self.id}, message_id={self.message_id}, "
+            f"confidence={self.confidence_score})"
+        )
 
     def __repr__(self) -> str:
         return self.__str__()

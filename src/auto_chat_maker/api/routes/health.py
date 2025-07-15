@@ -13,12 +13,12 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 
-@router.get("/health", status_code=status.HTTP_200_OK)  # type: ignore[misc]
+@router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check() -> Dict[str, Any]:
     """ヘルスチェックエンドポイント"""
     settings = get_settings()
 
-    health_info = {
+    health_info: Dict[str, Any] = {
         "status": "healthy",
         "service": settings.app_name,
         "version": settings.app_version,
@@ -30,15 +30,13 @@ async def health_check() -> Dict[str, Any]:
     return health_info
 
 
-@router.get(
-    "/health/detailed", status_code=status.HTTP_200_OK
-)  # type: ignore[misc]
+@router.get("/health/detailed", status_code=status.HTTP_200_OK)
 async def detailed_health_check() -> Dict[str, Any]:
     """詳細ヘルスチェックエンドポイント"""
     settings = get_settings()
 
     # 基本的なヘルス情報
-    health_info = {
+    health_info: Dict[str, Any] = {
         "status": "healthy",
         "service": settings.app_name,
         "version": settings.app_version,

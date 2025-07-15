@@ -10,24 +10,23 @@ t-wada氏のTDDの考え方に基づいて実装:
 import json
 import logging
 
-import pytest
 import structlog
 
 from auto_chat_maker.utils.logger import AppLogger, LoggerConfig
 
 
-def test_logger_config_setup_logging(monkeypatch):
+def test_logger_config_setup_logging(monkeypatch) -> None:
     """LoggerConfig.setup_loggingでloggingとstructlogが初期化されること"""
     # Arrange
     config = LoggerConfig(log_level="DEBUG", log_format="json")
-    called = {}
+    called: dict[str, object] = {}
 
-    def fake_basicConfig(**kwargs):
+    def fake_basicConfig(**kwargs: object) -> None:
         called["basicConfig"] = kwargs
 
     monkeypatch.setattr(logging, "basicConfig", fake_basicConfig)
 
-    def fake_configure(*args, **kwargs):
+    def fake_configure(*args: object, **kwargs: object) -> None:
         called["structlog_configure"] = (args, kwargs)
 
     monkeypatch.setattr(structlog, "configure", fake_configure)
@@ -40,7 +39,7 @@ def test_logger_config_setup_logging(monkeypatch):
     assert "structlog_configure" in called
 
 
-def test_app_logger_info_logs_message(caplog):
+def test_app_logger_info_logs_message(caplog) -> None:
     """AppLogger.infoで情報ログが出力されること"""
     # Arrange
     logger = AppLogger("test_logger")
@@ -61,7 +60,7 @@ def test_app_logger_info_logs_message(caplog):
         assert log_data["user"] == "test"
 
 
-def test_app_logger_error_logs_message(caplog):
+def test_app_logger_error_logs_message(caplog) -> None:
     """AppLogger.errorでエラーログが出力されること"""
     # Arrange
     logger = AppLogger("test_logger")
@@ -82,7 +81,7 @@ def test_app_logger_error_logs_message(caplog):
         assert log_data["error_code"] == "E001"
 
 
-def test_app_logger_debug_logs_message(caplog):
+def test_app_logger_debug_logs_message(caplog) -> None:
     """AppLogger.debugでデバッグログが出力されること"""
     # Arrange
     logger = AppLogger("test_logger")
