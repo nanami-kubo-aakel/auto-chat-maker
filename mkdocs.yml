@@ -27,7 +27,6 @@ nav:
           - 詳細仕様: requirements/use-case-specifications.md
           - ユースケース図: requirements/use-case-diagram.md
           - シーケンス図: requirements/sequence-diagram.md
-      - 開発計画: requirements/development-plan.md
   - 設計書:
       - 概要: design/README.md
       - システムアーキテクチャ: design/system-architecture.md
@@ -40,12 +39,13 @@ nav:
           - フェーズ1 クラス設計: design/phase1-class-design.md
           - フェーズ2 コア機能設計: design/phase2-core-functionality-design.md
           - フェーズ3 データ・UI設計: design/phase3-data-ui-design.md
-  - 仕様書:
-      - 概要: specification/README.md
-      - 技術仕様: specification/technical-specification.md
-      - アーキテクチャ仕様: specification/architecture.md
-      - Azure AD認証仕様: specification/azure-ad-auth-spec.md
-      - MCP統合仕様: specification/mcp-integration-spec.md
-      - Webhook処理仕様: specification/webhook-processing-spec.md
-  - 開発者ガイド:
-      - 概要: developer-guide/README.md
+      - 仕様書:
+          - 技術仕様: design/technical-specification.md
+          - アーキテクチャ仕様: design/architecture.md
+          - Azure AD認証仕様: design/azure-ad-auth-spec.md
+          - MCP統合仕様: design/mcp-integration-spec.md
+          - Webhook処理仕様: design/webhook-processing-spec.md
+  - 開発ルール:
+      - 概要: instructions/README.md
+  - スケジュール:
+      - 開発計画: schedule/development-plan.md
