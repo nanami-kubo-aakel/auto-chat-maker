@@ -50,6 +50,10 @@ class LoggerConfig:
         """ロガーを取得"""
         return structlog.get_logger(name)
 
+    def setup_logging(self) -> None:
+        """外部から明示的にログ設定を初期化"""
+        self._configure_logging()
+
 
 # デフォルトロガー設定
 logger_config = LoggerConfig()
@@ -62,3 +66,19 @@ def configure_logging(
     """ログ設定を更新"""
     global logger_config
     logger_config = LoggerConfig(log_level, log_format)
+
+
+class AppLogger:
+    """アプリケーションログクラス"""
+
+    def __init__(self, name: str):
+        self.logger = get_logger(name)
+
+    def info(self, message: str, **kwargs) -> None:
+        self.logger.info(message, **kwargs)
+
+    def error(self, message: str, **kwargs) -> None:
+        self.logger.error(message, **kwargs)
+
+    def debug(self, message: str, **kwargs) -> None:
+        self.logger.debug(message, **kwargs)

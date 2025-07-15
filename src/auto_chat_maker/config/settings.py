@@ -3,6 +3,7 @@
 """
 from typing import Optional
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -62,6 +63,23 @@ class Settings(BaseSettings):
     enable_mail_plugin: bool = False
     enable_ai_processing: bool = True
     enable_webhook_processing: bool = True
+
+    @field_validator(
+        "secret_key",
+        "microsoft_client_id",
+        "microsoft_client_secret",
+        "microsoft_tenant_id",
+        "claude_api_key",
+        "mcp_server_url",
+        "mcp_api_key",
+        "webhook_secret",
+        mode="before",
+    )
+    @classmethod
+    def empty_str_to_none(cls, v):
+        if isinstance(v, str) and v.strip() == "":
+            return None
+        return v
 
     class Config:
         env_file = ".env"
