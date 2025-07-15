@@ -39,6 +39,14 @@ nav:
           - フェーズ1 クラス設計: design/phase1-class-design.md
           - フェーズ2 コア機能設計: design/phase2-core-functionality-design.md
           - フェーズ3 データ・UI設計: design/phase3-data-ui-design.md
+      - テストケース:
+          - 概要: design/test-cases/README.md
+          - テストケース概要: design/test-cases/test-case-overview.md
+          - テストケース要約: design/test-cases/test-case-summary.md
+          - 単体テストケース: design/test-cases/unit-test-cases.md
+          - 統合テストケース: design/test-cases/integration-test-cases.md
+          - テスト実装計画: design/test-cases/test-implementation-plan.md
+          - テストカバレッジ分析: design/test-cases/test-coverage-analysis.md
       - 仕様書:
           - 技術仕様: design/technical-specification.md
           - アーキテクチャ仕様: design/architecture.md
@@ -49,8 +57,13 @@ nav:
       - 開発者ガイド: instructions/developer-guide.md
       - 環境設定ガイド: instructions/environment-setup.md
       - コントリビューションガイド: instructions/contributing.md
+      - コード品質チェック: instructions/code-quality-check.md
   - スケジュール:
+      - 概要: schedule/README.md
       - 開発計画: schedule/development-plan.md
+      - 進捗管理: schedule/progress-management.md
+      - 実装状況レポート: schedule/implementation-status-report.md
+      - 実装済みファイルチェックリスト: schedule/implemented-files-checklist.md
       - フェーズ別詳細設計:
           - フェーズ1 クラス設計: design/phase1-class-design.md
           - フェーズ1.5 MCP統合設計: design/phase1-5-mcp-integration-design.md

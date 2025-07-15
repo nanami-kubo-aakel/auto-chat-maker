@@ -89,13 +89,13 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
-@app.get("/")
+@app.get("/")  # type: ignore[misc]
 async def root() -> dict[str, str]:
     """ルートエンドポイント"""
     return {"message": "Auto Chat Maker API", "version": "1.0.0"}
 
 
-@app.get("/health")
+@app.get("/health")  # type: ignore[misc]
 async def health_check() -> dict[str, str]:
     """ヘルスチェックエンドポイント"""
     return {"status": "healthy", "service": "Auto Chat Maker"}

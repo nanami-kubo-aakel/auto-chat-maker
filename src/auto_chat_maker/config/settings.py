@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     enable_ai_processing: bool = True
     enable_webhook_processing: bool = True
 
-    @field_validator(
+    @field_validator(  # type: ignore[misc]
         "secret_key",
         "microsoft_client_id",
         "microsoft_client_secret",
