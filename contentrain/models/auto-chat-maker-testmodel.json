@@ -11,5 +11,18 @@
     },
     "validations": {},
     "fieldType": "array"
+  },
+  {
+    "name": "title-test",
+    "fieldId": "title-test",
+    "modelId": "auto-chat-maker-testmodel",
+    "componentId": "single-line-text",
+    "options": {
+      "title-field": {
+        "value": true
+      }
+    },
+    "validations": {},
+    "fieldType": "string"
   }
 ]
