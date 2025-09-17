@@ -1,0 +1,15 @@
+[
+  {
+    "name": "multi-line-text-test",
+    "fieldId": "multi-line-text-test",
+    "modelId": "auto-chat-maker-testmodel",
+    "componentId": "multi-line-text",
+    "options": {
+      "title-field": {
+        "value": true
+      }
+    },
+    "validations": {},
+    "fieldType": "array"
+  }
+]
