@@ -7,6 +7,8 @@
   <!-- DeCap CMS -->
   <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- CMS設定ファイル -->
+  <script src="config.yml"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -40,21 +42,32 @@
       addDebugInfo('Netlify Identityが見つかりません');
     }
 
-    // 手動でCMSを初期化
-    document.addEventListener('DOMContentLoaded', function() {
-      addDebugInfo('DOMContentLoaded - CMS初期化を開始');
-
-      if (window.CMS) {
+    // CMS初期化を待機して実行
+    function initializeCMS() {
+      if (window.CMS && window.CMS.init) {
         addDebugInfo('CMSオブジェクトが見つかりました - 初期化を実行');
         try {
-          window.CMS.init();
+          window.CMS.init({
+            config: {
+              load_config_file: true
+            }
+          });
           addDebugInfo('CMS.init()を実行しました');
+          cmsLoaded = true;
         } catch (error) {
           addDebugInfo('CMS.init()でエラー: ' + error.message);
         }
       } else {
-        addDebugInfo('CMSオブジェクトが見つかりません');
+        addDebugInfo('CMSオブジェクトまたはinit関数が見つかりません');
+        // 500ms後に再試行
+        setTimeout(initializeCMS, 500);
       }
+    }
+
+    // DOMContentLoadedイベントでCMS初期化を開始
+    document.addEventListener('DOMContentLoaded', function() {
+      addDebugInfo('DOMContentLoaded - CMS初期化を開始');
+      setTimeout(initializeCMS, 100);
     });
 
     // CMS読み込みタイムアウト（10秒に短縮）
