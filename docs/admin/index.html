@@ -8,6 +8,24 @@
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <!-- CMS will be injected here -->
+  <div id="nc-root">
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h2>Auto Chat Maker CMS</h2>
+      <p>CMSを読み込み中...</p>
+      <p>もしこの画面が長時間表示される場合は、ブラウザのコンソールを確認してください。</p>
+    </div>
+  </div>
+  <script>
+    // エラーハンドリングを追加
+    window.addEventListener('error', function(e) {
+      console.error('CMS Error:', e.error);
+      document.getElementById('nc-root').innerHTML =
+        '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; color: red;">' +
+        '<h2>エラーが発生しました</h2>' +
+        '<p>ブラウザのコンソールを確認してください。</p>' +
+        '<p>エラー: ' + e.message + '</p>' +
+        '</div>';
+    });
+  </script>
 </body>
 </html>
