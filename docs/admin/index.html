@@ -7,6 +7,13 @@
   <!-- DeCap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    CMS.init({
+      config: {
+        load_config_file: true
+      }
+    });
+  </script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -21,32 +28,23 @@
   </div>
 
   <script>
+    // デバッグ情報を追加
+    console.log('Script loaded, checking dependencies...');
+
     // Netlify Identityの初期化
     if (window.netlifyIdentity) {
+      console.log('Netlify Identity found, initializing...');
       window.netlifyIdentity.init();
+    } else {
+      console.error('Netlify Identity not found!');
     }
 
-    // CMS初期化をスクリプト読み込み後に実行
-    document.addEventListener('DOMContentLoaded', function() {
-      // CMSスクリプトの読み込みを待機
-      function waitForCMS() {
-        if (window.CMS) {
-          console.log('CMS object found, initializing...');
-          try {
-            CMS.init();
-            console.log('CMS initialized successfully');
-          } catch (error) {
-            console.error('CMS initialization failed:', error);
-          }
-        } else {
-          console.log('CMS object not found, retrying...');
-          setTimeout(waitForCMS, 100);
-        }
-      }
-
-      // 少し待ってからCMS初期化を開始
-      setTimeout(waitForCMS, 500);
-    });
+    // CMSオブジェクトの確認
+    if (window.CMS) {
+      console.log('CMS object found');
+    } else {
+      console.error('CMS object not found!');
+    }
   </script>
 </body>
 </html>
