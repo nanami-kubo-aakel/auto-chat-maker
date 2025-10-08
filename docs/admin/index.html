@@ -18,27 +18,36 @@
   <script>
     // 詳細なエラーハンドリングを追加
     let cmsLoaded = false;
+    let debugInfo = [];
 
-    // CMS読み込みタイムアウト（30秒）
+    // デバッグ情報を収集
+    function addDebugInfo(message) {
+      debugInfo.push(new Date().toLocaleTimeString() + ': ' + message);
+      console.log('CMS Debug:', message);
+    }
+
+    addDebugInfo('CMS初期化開始');
+
+    // CMS読み込みタイムアウト（10秒に短縮）
     setTimeout(function() {
       if (!cmsLoaded) {
+        addDebugInfo('CMS読み込みタイムアウト');
         document.getElementById('nc-root').innerHTML =
           '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; color: orange;">' +
           '<h2>CMS読み込みタイムアウト</h2>' +
-          '<p>30秒経過しましたがCMSが読み込まれませんでした。</p>' +
+          '<p>10秒経過しましたがCMSが読み込まれませんでした。</p>' +
+          '<p>デバッグ情報：</p>' +
+          '<pre style="text-align: left; background: #f5f5f5; padding: 10px; max-width: 600px; margin: 0 auto;">' +
+          debugInfo.join('\n') +
+          '</pre>' +
           '<p>ブラウザのコンソールを確認してください。</p>' +
-          '<p>考えられる原因：</p>' +
-          '<ul style="text-align: left; max-width: 400px; margin: 0 auto;">' +
-          '<li>config.ymlの設定エラー</li>' +
-          '<li>ネットワーク接続の問題</li>' +
-          '<li>GitHub認証の問題</li>' +
-          '</ul>' +
           '</div>';
       }
-    }, 30000);
+    }, 10000);
 
     // エラーハンドリング
     window.addEventListener('error', function(e) {
+      addDebugInfo('JavaScriptエラー: ' + e.message);
       console.error('CMS Error:', e.error);
       document.getElementById('nc-root').innerHTML =
         '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; color: red;">' +
@@ -46,18 +55,35 @@
         '<p>エラー: ' + e.message + '</p>' +
         '<p>ファイル: ' + e.filename + '</p>' +
         '<p>行: ' + e.lineno + '</p>' +
-        '<p>ブラウザのコンソールで詳細を確認してください。</p>' +
+        '<p>デバッグ情報：</p>' +
+        '<pre style="text-align: left; background: #f5f5f5; padding: 10px; max-width: 600px; margin: 0 auto;">' +
+        debugInfo.join('\n') +
+        '</pre>' +
         '</div>';
     });
 
     // CMS読み込み成功の検知
     window.addEventListener('load', function() {
+      addDebugInfo('ページ読み込み完了');
       setTimeout(function() {
         if (document.querySelector('.nc-root') || document.querySelector('[data-netlify-cms]')) {
+          addDebugInfo('CMS読み込み成功を検知');
           cmsLoaded = true;
+        } else {
+          addDebugInfo('CMS要素が見つからない');
         }
       }, 2000);
     });
+
+    // DeCap CMSの初期化を監視
+    setTimeout(function() {
+      addDebugInfo('DeCap CMS初期化チェック');
+      if (window.CMS) {
+        addDebugInfo('CMSオブジェクトが利用可能');
+      } else {
+        addDebugInfo('CMSオブジェクトが見つからない');
+      }
+    }, 3000);
   </script>
 </body>
 </html>

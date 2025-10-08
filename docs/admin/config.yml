@@ -1,7 +1,5 @@
 backend:
-  name: github
-  repo: nanami-kubo-aakel/auto-chat-maker
-  branch: main
+  name: test-repo
 
 media_folder: "docs/images"  # メディアファイルの保存先
 public_folder: "/images"  # 公開URL
