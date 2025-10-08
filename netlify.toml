@@ -15,10 +15,8 @@
   to = "/admin/index.html"
   status = 200
 
-# SPAのためのリダイレクト設定（404エラー時にindexにリダイレクト）
+# admin/index.htmlへのリダイレクト設定（/admin/ でアクセス可能に）
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/admin/"
+  to = "/admin/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
-  force = false
