@@ -6,7 +6,7 @@
   <title>Auto Chat Maker CMS</title>
   <!-- DeCap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -15,37 +15,42 @@
   <div id="nc-root"></div>
 
   <script>
-    // DOM準備完了を待機してから初期化
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, starting initialization...');
+    // スクリプト読み込み完了を待機してから初期化
+    function initializeCMS() {
+      console.log('Checking for CMS dependencies...');
 
-      // 少し待ってから初期化（DOM完全準備のため）
-      setTimeout(function() {
-        // Netlify Identityの初期化
-        if (window.netlifyIdentity) {
-          console.log('Netlify Identity found, initializing...');
-          window.netlifyIdentity.init();
-        } else {
-          console.error('Netlify Identity not found!');
-        }
+      // Netlify Identityの初期化
+      if (window.netlifyIdentity) {
+        console.log('Netlify Identity found, initializing...');
+        window.netlifyIdentity.init();
+      } else {
+        console.error('Netlify Identity not found!');
+        return;
+      }
 
-        // CMS初期化
-        if (window.CMS) {
-          console.log('CMS object found, initializing...');
-          try {
-            CMS.init({
-              config: {
-                load_config_file: true
-              }
-            });
-            console.log('CMS initialized successfully');
-          } catch (error) {
-            console.error('CMS initialization failed:', error);
-          }
-        } else {
-          console.error('CMS object not found!');
+      // CMS初期化
+      if (window.CMS) {
+        console.log('CMS object found, initializing...');
+        try {
+          CMS.init({
+            config: {
+              load_config_file: true
+            }
+          });
+          console.log('CMS initialized successfully');
+        } catch (error) {
+          console.error('CMS initialization failed:', error);
         }
-      }, 100);
+      } else {
+        console.log('CMS object not found, retrying in 200ms...');
+        setTimeout(initializeCMS, 200);
+      }
+    }
+
+    // ページ読み込み完了後に初期化を開始
+    window.addEventListener('load', function() {
+      console.log('Window loaded, starting CMS initialization...');
+      setTimeout(initializeCMS, 100);
     });
   </script>
 </body>
