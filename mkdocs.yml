@@ -13,6 +13,10 @@ plugins:
   - search
   - mermaid2
 
+# 静的ファイルを含める
+extra_files:
+  - admin/
+
 nav:
   - ホーム: index.md
   - 要件定義:
