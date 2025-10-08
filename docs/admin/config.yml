@@ -1,5 +1,5 @@
 backend:
-  name: test-repo
+  name: git-gateway
 
 media_folder: "docs/images"  # メディアファイルの保存先
 public_folder: "/images"  # 公開URL

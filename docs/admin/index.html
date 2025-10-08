@@ -83,6 +83,19 @@
       } else {
         addDebugInfo('CMSオブジェクトが見つからない');
       }
+
+      // より詳細な情報を収集
+      addDebugInfo('window.CMS: ' + typeof window.CMS);
+      addDebugInfo('window.netlifyIdentity: ' + typeof window.netlifyIdentity);
+      addDebugInfo('document.querySelector(".nc-root"): ' + !!document.querySelector('.nc-root'));
+      addDebugInfo('document.querySelector("[data-netlify-cms]"): ' + !!document.querySelector('[data-netlify-cms]'));
+
+      // 設定ファイルの読み込み状況を確認
+      if (window.CMS && window.CMS.init) {
+        addDebugInfo('CMS.init関数が利用可能');
+      } else {
+        addDebugInfo('CMS.init関数が見つからない');
+      }
     }, 3000);
   </script>
 </body>
