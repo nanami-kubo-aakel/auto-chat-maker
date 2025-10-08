@@ -4,33 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Auto Chat Maker CMS</title>
+  <!-- DeCap CMS -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.8.4/dist/decap-cms.js"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
   <div id="netlify-identity-widget"></div>
 
-  <div id="nc-root"></div>
-
-  <!-- DeCap CMS -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@3.8.4/dist/decap-cms.js"></script>
+  <div id="nc-root">
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h2>Auto Chat Maker CMS</h2>
+      <p>CMSを読み込み中...</p>
+    </div>
+  </div>
 
   <script>
     // Netlify Identityの初期化
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init();
     }
-  </script>
 
-  <script>
-    // CMS初期化（スクリプト読み込み完了後に実行）
-    window.addEventListener('load', function() {
-      if (window.CMS) {
-        CMS.init();
-      } else {
-        console.error('CMS object not available');
-      }
-    });
+    // CMS初期化（標準的な方法）
+    CMS.init();
   </script>
 </body>
 </html>
