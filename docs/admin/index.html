@@ -6,8 +6,6 @@
   <title>Auto Chat Maker CMS</title>
   <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- DeCap CMS -->
-  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.8.4/dist/decap-cms.js"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -20,6 +18,7 @@
     </div>
   </div>
 
+  <!-- DeCap CMS - 動的読み込み -->
   <script>
     console.log('=== CMS Debug Information ===');
     console.log('Script loading started');
@@ -32,101 +31,46 @@
       console.error('Netlify Identity not found!');
     }
 
-    // CMS初期化関数
-    function initializeCMS() {
-      console.log('=== CMS Initialization Attempt ===');
+    // DeCap CMSスクリプトを動的に読み込み
+    function loadDeCapCMS() {
+      console.log('Loading DeCap CMS script...');
 
-      // デバッグ情報を出力
-      console.log('window.CMS:', typeof window.CMS);
-      console.log('window.decapCMS:', typeof window.decapCMS);
-      console.log('window.netlifyCMS:', typeof window.netlifyCMS);
-      console.log('All window properties containing "cms":', Object.keys(window).filter(key => key.toLowerCase().includes('cms')));
-      console.log('All window properties containing "decap":', Object.keys(window).filter(key => key.toLowerCase().includes('decap')));
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/decap-cms@3.8.4/dist/decap-cms.js';
+      script.onload = function() {
+        console.log('DeCap CMS script loaded successfully');
+        console.log('window.CMS after load:', typeof window.CMS);
+        console.log('window.decapCMS after load:', typeof window.decapCMS);
+        console.log('window.netlifyCMS after load:', typeof window.netlifyCMS);
 
-      // 複数のCMSオブジェクト名をチェック
-      let cmsObject = null;
-      if (window.CMS) {
-        cmsObject = window.CMS;
-        console.log('Found window.CMS');
-      } else if (window.decapCMS) {
-        cmsObject = window.decapCMS;
-        console.log('Found window.decapCMS');
-      } else if (window.netlifyCMS) {
-        cmsObject = window.netlifyCMS;
-        console.log('Found window.netlifyCMS');
-      } else {
-        // グローバルオブジェクトからCMSを探す
-        const globalObjects = Object.keys(window);
-        const cmsKeys = globalObjects.filter(key =>
-          key.toLowerCase().includes('cms') ||
-          key.toLowerCase().includes('decap')
-        );
-        console.log('Available CMS-related objects:', cmsKeys);
+        // DeCap CMSは自動的に初期化されるため、手動初期化は不要
+        // ただし、CMSオブジェクトが利用可能かチェック
+        setTimeout(function() {
+          console.log('Checking CMS availability after script load...');
+          console.log('window.CMS:', typeof window.CMS);
+          console.log('window.decapCMS:', typeof window.decapCMS);
+          console.log('window.netlifyCMS:', typeof window.netlifyCMS);
 
-        // 最初に見つかったCMSオブジェクトを使用
-        for (const key of cmsKeys) {
-          if (window[key] && typeof window[key] === 'object') {
-            cmsObject = window[key];
-            console.log('Using CMS object from:', key);
-            break;
-          }
-        }
-      }
-
-      if (cmsObject) {
-        console.log('CMS object found, calling init()...');
-        try {
-          if (typeof cmsObject.init === 'function') {
-            cmsObject.init();
-            console.log('CMS.init() called successfully');
+          if (window.CMS || window.decapCMS || window.netlifyCMS) {
+            console.log('CMS object is available - DeCap CMS should auto-initialize');
           } else {
-            console.error('CMS object found but init() method not available');
-            console.log('Available methods:', Object.keys(cmsObject));
+            console.error('CMS object still not available after script load');
           }
-        } catch (error) {
-          console.error('CMS.init() failed:', error);
-        }
-      } else {
-        console.error('No CMS object available');
-        return false;
-      }
-      return true;
+        }, 100);
+      };
+      script.onerror = function() {
+        console.error('Failed to load DeCap CMS script');
+      };
+
+      document.head.appendChild(script);
     }
 
-    // 複数のタイミングでCMS初期化を試行
-    let initAttempts = 0;
-    const maxAttempts = 10;
-
-    function tryInitializeCMS() {
-      initAttempts++;
-      console.log(`CMS initialization attempt ${initAttempts}/${maxAttempts}`);
-
-      if (initializeCMS()) {
-        console.log('CMS initialized successfully');
-        return;
-      }
-
-      if (initAttempts < maxAttempts) {
-        setTimeout(tryInitializeCMS, 500);
-      } else {
-        console.error('Failed to initialize CMS after maximum attempts');
-      }
-    }
 
     // DOMが完全に読み込まれた後に実行
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM Content Loaded');
-      // 少し遅らせてからCMS初期化を試行
-      setTimeout(tryInitializeCMS, 100);
-    });
-
-    // ウィンドウが完全に読み込まれた後にも実行
-    window.addEventListener('load', function() {
-      console.log('Window loaded');
-      // 既に初期化されていない場合のみ再試行
-      if (initAttempts === 0) {
-        setTimeout(tryInitializeCMS, 100);
-      }
+      // DeCap CMSスクリプトを読み込み
+      loadDeCapCMS();
     });
   </script>
 </body>
