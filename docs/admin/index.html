@@ -6,7 +6,7 @@
   <title>Auto Chat Maker CMS</title>
   <!-- DeCap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@3.8.4/dist/decap-cms.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.8.4/dist/decap-cms.js"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -20,13 +20,39 @@
   </div>
 
   <script>
+    // デバッグ情報を追加
+    console.log('=== CMS Debug Information ===');
+    console.log('window.CMS:', typeof window.CMS);
+    console.log('window.decapCMS:', typeof window.decapCMS);
+    console.log('window.netlifyCMS:', typeof window.netlifyCMS);
+    console.log('All window properties containing "cms":', Object.keys(window).filter(key => key.toLowerCase().includes('cms')));
+    console.log('All window properties containing "decap":', Object.keys(window).filter(key => key.toLowerCase().includes('decap')));
+
     // Netlify Identityの初期化
     if (window.netlifyIdentity) {
+      console.log('Netlify Identity found, initializing...');
       window.netlifyIdentity.init();
+    } else {
+      console.error('Netlify Identity not found!');
     }
 
-    // CMS初期化（標準的な方法）
-    CMS.init();
+    // CMS初期化を少し遅らせて実行
+    setTimeout(function() {
+      console.log('Attempting CMS initialization...');
+      console.log('window.CMS at init time:', typeof window.CMS);
+
+      if (window.CMS) {
+        console.log('CMS object found, calling init()...');
+        try {
+          CMS.init();
+          console.log('CMS.init() called successfully');
+        } catch (error) {
+          console.error('CMS.init() failed:', error);
+        }
+      } else {
+        console.error('CMS object still not available');
+      }
+    }, 1000);
   </script>
 </body>
 </html>
