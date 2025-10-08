@@ -6,7 +6,7 @@
   <title>Auto Chat Maker CMS</title>
   <!-- DeCap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
@@ -20,15 +20,33 @@
     </div>
   </div>
 
-  <!-- DeCap CMS 初期化 -->
-  <script>
-    CMS.init();
-  </script>
   <script>
     // Netlify Identityの初期化
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init();
     }
+
+    // CMS初期化をスクリプト読み込み後に実行
+    document.addEventListener('DOMContentLoaded', function() {
+      // CMSスクリプトの読み込みを待機
+      function waitForCMS() {
+        if (window.CMS) {
+          console.log('CMS object found, initializing...');
+          try {
+            CMS.init();
+            console.log('CMS initialized successfully');
+          } catch (error) {
+            console.error('CMS initialization failed:', error);
+          }
+        } else {
+          console.log('CMS object not found, retrying...');
+          setTimeout(waitForCMS, 100);
+        }
+      }
+
+      // 少し待ってからCMS初期化を開始
+      setTimeout(waitForCMS, 500);
+    });
   </script>
 </body>
 </html>
