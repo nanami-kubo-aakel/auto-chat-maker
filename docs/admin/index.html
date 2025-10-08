@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Auto Chat Maker CMS</title>
   <!-- DeCap CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
   <div id="nc-root">
@@ -16,15 +16,47 @@
     </div>
   </div>
   <script>
-    // エラーハンドリングを追加
+    // 詳細なエラーハンドリングを追加
+    let cmsLoaded = false;
+
+    // CMS読み込みタイムアウト（30秒）
+    setTimeout(function() {
+      if (!cmsLoaded) {
+        document.getElementById('nc-root').innerHTML =
+          '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; color: orange;">' +
+          '<h2>CMS読み込みタイムアウト</h2>' +
+          '<p>30秒経過しましたがCMSが読み込まれませんでした。</p>' +
+          '<p>ブラウザのコンソールを確認してください。</p>' +
+          '<p>考えられる原因：</p>' +
+          '<ul style="text-align: left; max-width: 400px; margin: 0 auto;">' +
+          '<li>config.ymlの設定エラー</li>' +
+          '<li>ネットワーク接続の問題</li>' +
+          '<li>GitHub認証の問題</li>' +
+          '</ul>' +
+          '</div>';
+      }
+    }, 30000);
+
+    // エラーハンドリング
     window.addEventListener('error', function(e) {
       console.error('CMS Error:', e.error);
       document.getElementById('nc-root').innerHTML =
         '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif; color: red;">' +
-        '<h2>エラーが発生しました</h2>' +
-        '<p>ブラウザのコンソールを確認してください。</p>' +
+        '<h2>JavaScriptエラーが発生しました</h2>' +
         '<p>エラー: ' + e.message + '</p>' +
+        '<p>ファイル: ' + e.filename + '</p>' +
+        '<p>行: ' + e.lineno + '</p>' +
+        '<p>ブラウザのコンソールで詳細を確認してください。</p>' +
         '</div>';
+    });
+
+    // CMS読み込み成功の検知
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        if (document.querySelector('.nc-root') || document.querySelector('[data-netlify-cms]')) {
+          cmsLoaded = true;
+        }
+      }, 2000);
     });
   </script>
 </body>
