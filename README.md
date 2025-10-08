@@ -124,3 +124,22 @@ make docs-deploy
 - **開発者ガイド**: 開発者向けガイド
 
 詳細は [ドキュメントサイト](http://127.0.0.1:8000) で確認してください。
+
+### DeCap CMS によるドキュメント編集
+
+このプロジェクトでは、[DeCap CMS](https://decapcms.org/)を使用してドキュメントをWeb UIから編集できます。
+
+#### オンライン編集
+
+Netlifyにデプロイされたサイトで、`/admin/` にアクセスすることで、CMSの管理画面からドキュメントを編集できます。
+
+- GitHub OAuthで認証
+- Markdownエディタでドキュメントを編集
+- 保存すると自動的にGitHubリポジトリにコミット
+- Netlifyが自動的に再ビルド・デプロイ
+
+詳細なセットアップ手順は [DeCap CMSセットアップガイド](docs/instructions/decap-cms-setup.md) を参照してください。
+
+#### ローカル編集
+
+従来通り、ローカルでMarkdownファイルを編集し、`git push`することも可能です。

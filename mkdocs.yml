@@ -58,6 +58,7 @@ nav:
       - 環境設定ガイド: instructions/environment-setup.md
       - コントリビューションガイド: instructions/contributing.md
       - コード品質チェック: instructions/code-quality-check.md
+      - DeCap CMSセットアップ: instructions/decap-cms-setup.md
   - スケジュール:
       - 概要: schedule/README.md
       - 開発計画: schedule/development-plan.md

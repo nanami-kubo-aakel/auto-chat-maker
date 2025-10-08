@@ -97,7 +97,8 @@ src/auto_chat_maker/
 
 > **詳細設計書へのリンク**: 各フェーズの詳細なクラス設計については、以下の設計書を参照してください。
 > - [Phase 1 クラス設計](../design/phase1-class-design.md) - 基盤構築の詳細クラス設計
-> - [Phase 1.5 MCP統合設計](../design/phase1-5-mcp-integration-design.md) - MCP連携の詳細実装
+> - [Phase 1.5 MCPサーバー設計](../design/phase1-5-mcp-server-design.md) - MCPサーバー開発の詳細設計
+> - [Phase 1.6 MCP統合設計](../design/phase1-6-mcp-integration-design.md) - MCP連携の詳細実装
 > - [Phase 2 コア機能設計](../design/phase2-core-functionality-design.md) - AI機能とWebhook処理の詳細設計
 > - [Phase 3 データ・UI設計](../design/phase3-data-ui-design.md) - データベースとWeb UIの詳細設計
 
@@ -138,20 +139,17 @@ Day 5: 基盤機能のテスト
 ```
 
 #### Week 2: 外部連携基盤
-**目標**: MCPサーバー連携と認証基盤の実装
+**目標**: Azure AD認証基盤の実装
 
 **実装内容**:
 ```
-Day 1-2: MCPサーバー連携の詳細実装
-- MCPサーバーの起動・接続確認
-- MCPクライアントクラスの基本実装
+Day 1-2: Azure AD認証基盤の実装
 - Azure AD認証基盤の実装
-- 基本的なAPI呼び出しテスト
+- 基本的な認証フローの実装
+- 設定管理の詳細実装
 
 実装ファイル:
-- config/mcp_settings.py: MCP設定クラス
 - config/azure_settings.py: Azure AD設定クラス
-- infrastructure/external/mcp_client.py: MCPクライアント基盤
 - infrastructure/auth/azure_ad.py: Azure AD認証基盤
 - infrastructure/auth/token_manager.py: トークン管理
 
@@ -178,11 +176,100 @@ Day 5: 基盤機能の統合テスト
 - domain/repositories/interfaces.py: リポジトリインターフェース
 ```
 
-### Phase 1.5: MCP連携詳細実装（1週間追加）
+### Phase 1.5: MCPサーバー開発（2-3週間）
 
-> **詳細設計書**: [Phase 1.5 MCP統合設計](../design/phase1-5-mcp-integration-design.md)
+> **詳細設計書**: [Phase 1.5 MCPサーバー設計](../design/phase1-5-mcp-server-design.md)
 
-**目標**: MCPサーバーとの詳細連携実装
+**目標**: Microsoft Teams用MCPサーバーの開発
+
+#### Week 3: MCPサーバー基盤開発
+**実装内容**:
+```
+Day 1-2: MCPプロトコル実装
+- MCPプロトコル仕様の理解と実装
+- HTTP/HTTPS通信基盤の実装
+- 基本的なエンドポイントの実装
+
+実装ファイル:
+- mcp-server/src/protocol/mcp_protocol.py: MCPプロトコル実装
+- mcp-server/src/server/mcp_server.py: MCPサーバー基盤
+- mcp-server/src/api/endpoints.py: 基本エンドポイント
+
+Day 3-4: Microsoft Graph API連携
+- Graph APIクライアントの実装
+- Teamsチャット操作機能の実装
+- 認証・認可機能の実装
+
+実装ファイル:
+- mcp-server/src/clients/graph_client.py: Graph APIクライアント
+- mcp-server/src/services/teams_service.py: Teams操作サービス
+- mcp-server/src/auth/oauth2_handler.py: OAuth2認証ハンドラー
+
+Day 5: 基本機能のテスト
+- MCPサーバーの起動・動作確認
+- Graph API連携のテスト
+- 認証機能のテスト
+```
+
+#### Week 4: MCPサーバー機能拡張
+**実装内容**:
+```
+Day 1-2: Teamsチャット操作機能
+- メッセージ取得機能の実装
+- メッセージ送信機能の実装
+- スレッド管理機能の実装
+
+実装ファイル:
+- mcp-server/src/services/chat_service.py: チャット操作サービス
+- mcp-server/src/models/chat_message.py: チャットメッセージモデル
+- mcp-server/src/api/chat_endpoints.py: チャットエンドポイント
+
+Day 3-4: Webhook管理機能
+- サブスクリプション作成・更新機能
+- Webhook受信処理の実装
+- 定期更新処理の実装
+
+実装ファイル:
+- mcp-server/src/services/webhook_service.py: Webhook管理サービス
+- mcp-server/src/models/subscription.py: サブスクリプションモデル
+- mcp-server/src/api/webhook_endpoints.py: Webhookエンドポイント
+
+Day 5: セキュリティ・エラーハンドリング
+- HTTPS通信の実装
+- レート制限の実装
+- エラーハンドリングの強化
+- ログ・監査機能の実装
+
+実装ファイル:
+- mcp-server/src/security/rate_limiter.py: レート制限
+- mcp-server/src/security/ssl_handler.py: SSL処理
+- mcp-server/src/utils/logger.py: ログ機能
+```
+
+#### Week 5: MCPサーバー統合・テスト
+**実装内容**:
+```
+Day 1-2: 統合テスト
+- 全機能の統合テスト
+- エラーケースのテスト
+- パフォーマンステスト
+
+Day 3-4: ドキュメント・デプロイ
+- API仕様書の作成
+- デプロイ手順の整備
+- 設定ファイルの整備
+
+Day 5: Auto Chat Makerとの連携テスト
+- MCPクライアントとの通信テスト
+- エンドツーエンドテスト
+- 問題点の修正
+```
+
+### Phase 1.6: MCP連携詳細実装（1週間）
+
+> **詳細設計書**: [Phase 1.6 MCP統合設計](../design/phase1-6-mcp-integration-design.md)
+
+**目標**: Auto Chat MakerシステムとMCPサーバーの詳細連携実装
 
 **実装内容**:
 ```
@@ -224,7 +311,7 @@ Day 5: Webhookサブスクリプション管理の実装
 
 > **詳細設計書**: [Phase 2 コア機能設計](../design/phase2-core-functionality-design.md)
 
-#### Week 3: AI機能実装
+#### Week 6: AI機能実装
 **目標**: Claude API連携とAI判定・生成機能の実装
 
 **実装内容**:
@@ -257,7 +344,7 @@ Day 5: 返信案生成ロジックの実装
 - application/use_cases/reply_sender.py: 返信送信ユースケース
 ```
 
-#### Week 4: Webhook処理実装
+#### Week 7: Webhook処理実装
 **目標**: Webhook受信処理とTeamsプラグインの実装
 
 **実装内容**:
@@ -289,7 +376,7 @@ Day 5: Webhook処理のテスト
 - ドキュメントの更新
 ```
 
-#### Week 5: 機能改善・最適化
+#### Week 8: 機能改善・最適化
 **目標**: AI機能とWebhook処理の改善
 
 **実装内容**:
@@ -314,7 +401,7 @@ Day 5: 全機能の統合テスト
 
 > **詳細設計書**: [Phase 3 データ・UI設計](../design/phase3-data-ui-design.md)
 
-#### Week 6: データベース実装
+#### Week 9: データベース実装
 **目標**: SQLiteデータベースとリポジトリの実装
 
 **実装内容**:
@@ -340,7 +427,7 @@ Day 5: データベース機能のテスト
 - パフォーマンステスト
 ```
 
-#### Week 7: Web UI実装
+#### Week 10: Web UI実装
 **目標**: シンプルなWeb UIと返信案選択・送信機能の実装
 
 **実装内容**:
@@ -373,7 +460,7 @@ Day 5: Web UIのテスト
 
 ### Phase 4: 統合・テスト（1週間）
 
-#### Week 8: 最終統合・テスト
+#### Week 11: 最終統合・テスト
 **目標**: エンドツーエンドの動作確認と品質向上
 
 **実装内容**:
@@ -397,107 +484,32 @@ Day 5: ドキュメント整備
 ## 実装優先度と依存関係
 
 ### 高優先度（基盤）
-1. **設定管理** (`config/`) - 全機能の前提
-2. **ログ出力** (`utils/logger.py`) - デバッグ・運用の前提
-3. **MCPクライアント** (`infrastructure/external/mcp_client.py`) - 外部連携の前提
+- **Phase 1**: プロジェクト基盤、Azure AD認証
+- **Phase 1.5**: MCPサーバー開発（必須）
+- **Phase 1.6**: MCP連携実装（必須）
 
 ### 中優先度（コア機能）
-1. **認証システム** (`infrastructure/auth/`) - セキュリティの前提
-2. **Webhook処理** (`api/routes/webhook.py`) - リアルタイム処理の前提
-3. **AI連携** (`infrastructure/external/claude_client.py`) - ビジネスロジックの前提
+- **Phase 2**: AI機能、Webhook処理
+- **Phase 3**: データベース、Web UI
 
-### 低優先度（UI・データ）
-1. **データベース** (`infrastructure/database/`) - 永続化
-2. **Web UI** (`templates/`) - ユーザーインターフェース
-3. **統合テスト** (`tests/`) - 品質保証
-
-## 実装フロー
-
-### 1. 基盤実装フロー
-```
-設定管理 → ログ出力 → 例外処理 → ヘルスチェック → MCPクライアント基盤
-```
-
-### 2. 認証実装フロー
-```
-Azure AD設定 → トークン管理 → 認証ミドルウェア → 認証エンドポイント
-```
-
-### 3. Webhook実装フロー
-```
-Webhook受信基盤 → 検証処理 → メッセージ処理 → AI連携 → 返信送信
-```
-
-### 4. UI実装フロー
-```
-データベース → リポジトリ → ユースケース → API → テンプレート
-```
-
-## エラーハンドリング戦略
-
-### 基本方針
-- **段階的エラー処理**: 各レイヤーでの適切なエラー処理
-- **ユーザーフレンドリー**: 分かりやすいエラーメッセージ
-- **ログ出力**: 詳細なエラー情報の記録
-
-### エラー分類
-1. **システムエラー**: アプリケーション内部エラー
-2. **外部サービスエラー**: MCPサーバー、Claude API等
-3. **バリデーションエラー**: 入力データの検証エラー
-4. **認証エラー**: 認証・認可エラー
-
-### 実装パターン
-- カスタム例外クラスの定義
-- グローバルエラーハンドラーの実装
-- リトライ機能の実装
-- フォールバック処理の実装
-
-## テスト戦略
-
-### 単体テスト（ホワイトボックステスト）
-- **対象**: 各レイヤーのビジネスロジック
-- **ツール**: pytest
-- **カバレッジ**: 80%以上
-- **モック**: 外部依存のモック化
-
-### テスト対象
-1. **ドメイン層**: エンティティ、値オブジェクト
-2. **アプリケーション層**: ユースケース
-3. **インフラストラクチャ層**: リポジトリ実装
-4. **API層**: コントローラー
-
-### テスト方針
-- **AAAパターン**: Arrange, Act, Assert
-- **依存性注入**: テスト可能な設計
-- **データ駆動テスト**: 複数パターンのテスト
-- **エラーケース**: 異常系のテスト
+### 低優先度（最適化）
+- **Phase 4**: 統合テスト、ドキュメント整備
 
 ## リスク管理
 
 ### 技術的リスク
-- **Claude API制限**: API制限に達した場合の対応策を準備
-- **Webhook設定**: Microsoft Graph Webhookの設定が複雑な場合の対応
+- **MCPサーバー開発の複雑性**: 段階的実装と十分なテストで対応
+- **Graph API制限**: レート制限とクォータ管理の実装
+- **認証の複雑性**: OAuth2フローの適切な実装
 
-### 対応策
-- **段階的実装**: 各機能を独立して実装し、依存関係を最小化
-- **十分なテスト**: 各段階で十分なテストを実施し、問題を早期発見
-
-## 成功指標
-
-### 技術的指標
-- **機能完成度**: 全計画機能の100%実装
-- **テストカバレッジ**: 80%以上のテストカバレッジ
-- **パフォーマンス**: 各処理時間の目標達成
-
-### 品質指標
-- **エラー率**: 1%以下のエラー率
-- **レスポンス時間**: 各機能の目標レスポンス時間達成
-- **ユーザビリティ**: 直感的な操作が可能
+### スケジュールリスク
+- **MCPサーバー開発の遅延**: 2-3週間のバッファを設定
+- **統合テストの複雑性**: 早期からの統合テスト実施
 
 ## 更新履歴
 
 - 初版作成: 2024年12月
-- ローカル試行版対応: 2024年12月 - 開発計画をローカル試行に最適化
-- 実装計画詳細化: 2024年12月 - ディレクトリ構造と実装順序を詳細化
+- MCPサーバー開発追加: 2024年12月 - Phase 1.5としてMCPサーバー開発を追加
+- フェーズ再編成: 2024年12月 - Phase 1.6を追加し、全フェーズを再編成
 - 最終更新: 2024年12月
 - 更新者: 開発チーム

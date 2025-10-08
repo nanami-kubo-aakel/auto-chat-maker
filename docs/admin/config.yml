@@ -1,0 +1,72 @@
+backend:
+  name: github
+  repo: nanami-kubo-aakel/auto-chat-maker
+  branch: main
+
+media_folder: "docs/images"  # メディアファイルの保存先
+public_folder: "/images"  # 公開URL
+
+locale: 'ja'  # 日本語ロケール
+
+collections:
+  # トップページ
+  - name: "top"
+    label: "トップページ"
+    files:
+      - label: "ホーム"
+        name: "index"
+        file: "docs/index.md"
+        fields:
+          - {label: "タイトル", name: "title", widget: "string", required: false}
+          - {label: "本文", name: "body", widget: "markdown"}
+
+  # 要件定義
+  - name: "requirements"
+    label: "要件定義"
+    folder: "docs/requirements"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "本文", name: "body", widget: "markdown"}
+
+  # 設計書 - メイン
+  - name: "design"
+    label: "設計書"
+    folder: "docs/design"
+    create: true
+    slug: "{{slug}}"
+    filter: {field: "path", pattern: "^(?!test-cases/).*"}
+    fields:
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "本文", name: "body", widget: "markdown"}
+
+  # 設計書 - テストケース
+  - name: "test-cases"
+    label: "テストケース"
+    folder: "docs/design/test-cases"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "本文", name: "body", widget: "markdown"}
+
+  # 開発ルール
+  - name: "instructions"
+    label: "開発ルール"
+    folder: "docs/instructions"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "本文", name: "body", widget: "markdown"}
+
+  # スケジュール
+  - name: "schedule"
+    label: "スケジュール"
+    folder: "docs/schedule"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "本文", name: "body", widget: "markdown"}

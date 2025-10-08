@@ -1,0 +1,24 @@
+[build]
+  # ビルドコマンド
+  command = "pip install -r requirements-docs.txt && mkdocs build"
+
+  # 公開ディレクトリ
+  publish = "site"
+
+  # Python バージョン指定
+  [build.environment]
+    PYTHON_VERSION = "3.11"
+
+# admin/index.htmlへのリダイレクト設定（/admin/ でアクセス可能に）
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+# SPAのためのリダイレクト設定（404エラー時にindexにリダイレクト）
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+  force = false
