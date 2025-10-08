@@ -1,7 +1,5 @@
 backend:
-  name: github
-  repo: nanami-kubo/auto_chat_maker  # 実際のリポジトリ名に更新
-  branch: main
+  name: git-gateway
 
 media_folder: "docs/images"  # メディアファイルの保存先
 public_folder: "/images"  # 公開URL
