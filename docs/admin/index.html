@@ -7,44 +7,46 @@
   <!-- DeCap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-    CMS.init({
-      config: {
-        load_config_file: true
-      }
-    });
-  </script>
 </head>
 <body>
   <!-- Netlify Identity Widget -->
   <div id="netlify-identity-widget"></div>
 
-  <div id="nc-root">
-    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
-      <h2>Auto Chat Maker CMS</h2>
-      <p>CMSを読み込み中...</p>
-      <p>もしこの画面が長時間表示される場合は、ブラウザのコンソールを確認してください。</p>
-    </div>
-  </div>
+  <div id="nc-root"></div>
 
   <script>
-    // デバッグ情報を追加
-    console.log('Script loaded, checking dependencies...');
+    // DOM準備完了を待機してから初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, starting initialization...');
 
-    // Netlify Identityの初期化
-    if (window.netlifyIdentity) {
-      console.log('Netlify Identity found, initializing...');
-      window.netlifyIdentity.init();
-    } else {
-      console.error('Netlify Identity not found!');
-    }
+      // 少し待ってから初期化（DOM完全準備のため）
+      setTimeout(function() {
+        // Netlify Identityの初期化
+        if (window.netlifyIdentity) {
+          console.log('Netlify Identity found, initializing...');
+          window.netlifyIdentity.init();
+        } else {
+          console.error('Netlify Identity not found!');
+        }
 
-    // CMSオブジェクトの確認
-    if (window.CMS) {
-      console.log('CMS object found');
-    } else {
-      console.error('CMS object not found!');
-    }
+        // CMS初期化
+        if (window.CMS) {
+          console.log('CMS object found, initializing...');
+          try {
+            CMS.init({
+              config: {
+                load_config_file: true
+              }
+            });
+            console.log('CMS initialized successfully');
+          } catch (error) {
+            console.error('CMS initialization failed:', error);
+          }
+        } else {
+          console.error('CMS object not found!');
+        }
+      }, 100);
+    });
   </script>
 </body>
 </html>
